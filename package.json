@@ -1,26 +1,10 @@
 {
-  "name": "angular-electron",
+  "name": "shooting-records",
   "version": "10.5.2",
-  "description": "Angular 13 with Electron 18 (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "description": "Shooting record tracking",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Christopher K."
   },
-  "keywords": [
-    "angular",
-    "angular 13",
-    "electron",
-    "electron 18",
-    "nodejs",
-    "typescript",
-    "playwright",
-    "eslint",
-    "sass",
-    "windows",
-    "mac",
-    "linux"
-  ],
   "main": "app/main.js",
   "private": true,
   "scripts": {
@@ -41,15 +25,17 @@
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
-    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "lint": "ng lint"
   },
   "dependencies": {
+    "@angular/animations": "13.3.1",
+    "@angular/cdk": "~13.3.7",
     "@angular/common": "13.3.1",
     "@angular/compiler": "13.3.1",
     "@angular/core": "13.3.1",
     "@angular/forms": "13.3.1",
     "@angular/language-service": "13.3.1",
+    "@angular/material": "~13.3.7",
     "@angular/platform-browser": "13.3.1",
     "@angular/platform-browser-dynamic": "13.3.1",
     "@angular/router": "13.3.1",
