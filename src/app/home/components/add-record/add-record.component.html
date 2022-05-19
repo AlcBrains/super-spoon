@@ -1,38 +1,63 @@
 <h1 mat-dialog-title>Νέα καταχώρηση</h1>
 <div mat-dialog-content>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Ημερομηνία</mat-label>
-        <input matInput [matDatepicker]="picker">
-        <mat-hint>ΗΗ/ΜΜ/ΕΕΕΕ</mat-hint>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Όνομα</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Τοποθεσία</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Τύπος πυρομαχικού</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Τιμή πώλησης (ανα Τμχ)</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Τιμή αγοράς (ανα Τμχ)</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
-    <mat-form-field appearance="fill" class="margin-small max-width-med">
-        <mat-label>Ποσότητα</mat-label>
-        <input matInput [(ngModel)]="record">
-    </mat-form-field>
+    <div [formGroup]="shootingRecordFormControl">
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Ημερομηνία</b></mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="record.saleDate" formControlName="saleDate">
+            <mat-hint>ΗΗ/ΜΜ/ΕΕΕΕ</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τοποθεσία</b></mat-label>
+            <input matInput [(ngModel)]="record.location" formControlName="location">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τύπος</b></mat-label>
+            <mat-select [(ngModel)]="record.type" formControlName="type">
+                <mat-option>None</mat-option>
+                <mat-option value="training">Προπόνηση</mat-option>
+                <mat-option value="match">Αγώνας</mat-option>
+                <mat-option value="championship">Πρωταθληματικός Αγώνας</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Όνομα</b></mat-label>
+            <input matInput [(ngModel)]="record.name" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τύπος πυρομαχικού</b></mat-label>
+            <mat-select [(ngModel)]="record.slugType" formControlName="slugType">
+                <mat-option>None</mat-option>
+                <mat-option value="9mm">0,9"</mat-option>
+                <mat-option value="40mm">0,40"</mat-option>
+                <mat-option value="22mm">0,22"</mat-option>
+                <mat-option value="45mm">0,45"</mat-option>
+                <mat-option value="308mm">0,308"</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Ποσότητα</b></mat-label>
+            <input matInput [(ngModel)]="record.quantity" formControlName="quantity">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τιμή πώλησης (ανα Τμχ)</b></mat-label>
+            <input matInput [(ngModel)]="record.priceSold" formControlName="priceSold">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τιμή αγοράς (ανα Τμχ)</b></mat-label>
+            <input matInput [(ngModel)]="record.priceBought" formControlName="priceBought">
+        </mat-form-field>
+    </div>
 </div>
 <div mat-dialog-actions align="end">
     <button mat-raised-button (click)="onNoClick()">Ακύρωση</button>
-    <button mat-raised-button color="primary" cdkFocusInitial>Ok</button>
+    <button mat-raised-button color="primary" (click)="onSave()" cdkFocusInitial>Ok</button>
 </div>

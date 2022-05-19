@@ -1,11 +1,13 @@
 export interface IShootingRecord {
-  position: number;
-  saleDate: string;
-  name: string;
+  id: number;
+  saleDate: any;
   location: string;
+  type: string;
+  name: string;
   slugType: string;
   quantity: number;
   priceBought: number;
   priceSold: number;
+  profitPerUnit: number;
   profit: number;
 }
