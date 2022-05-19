@@ -1,7 +1,3 @@
-table {
-    width: 100%;
-}
-
 th.mat-sort-header-sorted {
     color: black;
 }
@@ -12,4 +8,8 @@ th.mat-sort-header-sorted {
 
 .margined-button {
     margin: 5px;
+}
+
+.full-width {
+    width: 100%;
 }

@@ -1,9 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
+import { AddRecordComponent } from '../add-record/add-record.component';
 
 const ELEMENT_DATA: IShootingRecord[] = [
   {
@@ -48,7 +50,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public displayedColumns: string[] = ['select', 'saleDate', 'name', 'location', 'slugType', 'quantity', 'priceBought', 'priceSold', 'profit'];
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.selection = new SelectionModel<IShootingRecord>(true, []);
@@ -99,6 +101,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
     randomElement.position = ELEMENT_DATA[ELEMENT_DATA.length - 1].position + 1;
     ELEMENT_DATA.push(randomElement);
     this.refreshTableControls();
+  }
+
+
+
+  public openDialog(): void {
+    const dialogRef = this.dialog.open(AddRecordComponent, {
+      width: '30%'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   private refreshTableControls() {

@@ -1,20 +1,25 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { HomeRoutingModule } from './home-routing.module';
-
-import { HomeComponent } from './components/home-component/home.component';
-import { SharedModule } from '../shared/shared.module';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTableModule } from '@angular/material/table';
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button'
-import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from '../shared/shared.module';
+import { AddRecordComponent } from './components/add-record/add-record.component';
+import { HomeComponent } from './components/home-component/home.component';
+import { HomeRoutingModule } from './home-routing.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+
 
 @NgModule({
-  declarations: [HomeComponent],
+  declarations: [HomeComponent, AddRecordComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -23,8 +28,14 @@ import { MatIconModule } from '@angular/material/icon';
     BrowserAnimationsModule,
     MatTableModule,
     MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
     MatSortModule,
-    MatIconModule]
+    MatIconModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule],
+    providers:[{ provide: MAT_DATE_LOCALE, useValue: 'el-GR' }]
 })
 export class HomeModule { }

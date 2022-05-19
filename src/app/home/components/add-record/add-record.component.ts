@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -8,9 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AddRecordComponent implements OnInit {
 
-  constructor() { }
+  public record: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<AddRecordComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
+  }
+
+
+  public onSave() {
+    console.log('hey')
+    this.dialogRef.close();
+  }
+
+  public onNoClick() {
+    this.dialogRef.close();
   }
 
 }
