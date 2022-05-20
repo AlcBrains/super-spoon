@@ -1,11 +1,41 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as url from 'url';
+import { IShootingRecord } from '../src/app/home/interfaces/IShootingRecord';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
+
+
+const ELEMENT_DATA: IShootingRecord[] = [
+  {
+    id: 1,
+    saleDate: '05/02/2022',
+    name: 'Γιάννης Στρατήρος',
+    location: 'Ε\'ΜΚ',
+    type: 'training',
+    slugType: '9mm',
+    quantity: 2,
+    priceBought: 10,
+    priceSold: 15,
+    profitPerUnit: 0,
+    profit: 0
+  }, {
+    id: 2,
+    saleDate: '12/02/2022',
+    name: 'Βαγγέλης Κατσαΐτης',
+    location: 'Νάρρες',
+    type: 'championship',
+    slugType: '9mm',
+    quantity: 3,
+    priceBought: 11,
+    priceSold: 15,
+    profitPerUnit: 0,
+    profit: 0
+  }
+];
 
 function createWindow(): BrowserWindow {
 
@@ -36,7 +66,7 @@ function createWindow(): BrowserWindow {
     let pathIndex = './index.html';
 
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-       // Path when running electron in local folder
+      // Path when running electron in local folder
       pathIndex = '../dist/index.html';
     }
 
@@ -58,12 +88,28 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
+function createListeners() {
+  ipcMain.on('get-items', async (event: any, data: any) => {
+    event.returnValue = ELEMENT_DATA;
+  });
+
+  ipcMain.on('add-item', async (event: any, data: any) => {
+    console.log(data)
+    event.returnValue = 'ok';
+  })
+}
+
+
 try {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  app.on('ready', () => setTimeout(createWindow, 400));
+  app.on('ready', () => {
+    createListeners();
+    setTimeout(createWindow, 400);
+  });
+
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {

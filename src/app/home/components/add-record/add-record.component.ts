@@ -3,6 +3,8 @@ import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
+import { take } from 'rxjs';
+import { ElectronService } from '../../../core/services';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
 
 export class DateStateMatcher implements ErrorStateMatcher {
@@ -32,6 +34,7 @@ export class AddRecordComponent {
   })
 
   constructor(
+    private electronService: ElectronService,
     public dialogRef: MatDialogRef<AddRecordComponent>,
     @Inject(MAT_DIALOG_DATA) public record: IShootingRecord) { }
 
@@ -47,13 +50,7 @@ export class AddRecordComponent {
 
   private createOrUpdateRecord() {
     this.record.saleDate = moment(this.record.saleDate).format('DD/MM/YYYY');
-
-    if (this.record.id == null) {
-      console.log('new Record!')
-    } else {
-      console.log('old Record!')
-    }
-    console.log(this.record)
+    this.electronService.addRecord(this.record).pipe(take(1)).subscribe();
   }
 
   public onNoClick() {
