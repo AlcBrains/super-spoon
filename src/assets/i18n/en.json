@@ -1,12 +1,5 @@
 {
-  "PAGES": {
-      "HOME": {
-          "TITLE": "App works !",
-          "GO_TO_DETAIL": "Go to Detail"
-      },
-      "DETAIL": {
-        "TITLE": "Detail page !",
-        "BACK_TO_HOME": "Back to Home"
-    }
-  }
+    "training": "Training",
+    "match": "Match",
+    "championship": "Championship Match"
 }

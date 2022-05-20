@@ -6,14 +6,31 @@ th.mat-sort-header-sorted {
     overflow: initial;
 }
 
-.demo-button-container {
-    padding-bottom: 5px;
+.margined-button {
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
-.margined-button {
-    margin: 5px;
+.first-button {
+    margin-left: 20px;
 }
 
 .full-width {
     width: 100%;
+}
+
+.margined-search {
+    margin-left: 5px;
+    margin-top: 5px;
+    vertical-align: -5px;
+}
+
+.centered {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.med {
+    width: 350px;
 }
