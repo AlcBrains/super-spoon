@@ -30,8 +30,7 @@ export class HomeComponent implements OnInit {
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
   public elementData: IShootingRecord[];
-  public selection: SelectionModel<IShootingRecord>;
-  public displayedColumns: string[] = ['select', 'saleDate', 'location', 'type', 'name', 'slugType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
+  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'slugType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
 
   constructor(public dialog: MatDialog, private electronService: ElectronService) { }
 
@@ -40,37 +39,6 @@ export class HomeComponent implements OnInit {
     this.setMonthScope();
   }
 
-
-  /**
-   *  Whether the number of selected elements matches the total number of rows. 
-   * */
-  public isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** 
-   * Selects all rows if they are not all selected; otherwise clear selection. 
-   * */
-  public masterToggle() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    this.selection.select(...this.dataSource.data);
-  }
-
-  /** 
-   * The label for the checkbox on the passed row 
-   * */
-  public checkboxLabel(row?: IShootingRecord): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    this.calculateTotals();
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
-  }
 
   public createShootingRecord(): void {
     this.openDialog({} as IShootingRecord);
@@ -91,7 +59,6 @@ export class HomeComponent implements OnInit {
    */
   public filterRecords() {
 
-    this.selection.clear();
     //filter Records by name :
     this.dataSource.filterPredicate = ((data, filter) => data.name.toLowerCase().includes(filter.toLowerCase()));
     this.dataSource.filter = this.searchText;
@@ -109,7 +76,6 @@ export class HomeComponent implements OnInit {
    * Change filtering based on ammo type
    */
   public changeAmmoType() {
-    this.selection.clear();
     this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
     this.dataSource.filter = this.slugTypeSearch;
     this.calculateTotals();
@@ -117,7 +83,6 @@ export class HomeComponent implements OnInit {
 
   public printContent() {
     const ws = XLSX.utils.table_to_sheet(this.test.nativeElement, { raw: true });
-
     //Removing "Edit" Column since it is not necessary
     for (var key in ws) {
       if (ws.hasOwnProperty(key)) {
@@ -132,7 +97,7 @@ export class HomeComponent implements OnInit {
   }
 
   private calculateTotals() {
-    const tmp = this.selection.selected.length > 0 ? this.selection.selected : this.dataSource.filteredData;
+    const tmp = this.dataSource.filteredData;
     //Price sold - price bought, times the quantity.
     this.totalProfit = tmp.map((record) => record.profit)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
@@ -157,7 +122,7 @@ export class HomeComponent implements OnInit {
       width: '550px ',
       data: shootingRecord
     }).afterClosed().subscribe((result) => {
-      if (result.reason == 'success') {
+      if (result != null && result.reason == 'success') {
         this.requestData(this.monthScope);
       }
     });
@@ -165,8 +130,6 @@ export class HomeComponent implements OnInit {
 
   private requestData(monthlyScope: boolean) {
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
-    this.selection = new SelectionModel<IShootingRecord>(true, []);
-
     this.electronService.getAllRecords(monthlyScope).pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
@@ -174,6 +137,7 @@ export class HomeComponent implements OnInit {
       }
       this.elementData = elementData;
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
+      this.calculateTotals();
     })
 
   }

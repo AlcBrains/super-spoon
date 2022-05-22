@@ -1,9 +1,14 @@
 {
-  "name": "angular-electron",
+  "name": "shooting-recorder",
   "version": "10.5.2",
   "main": "main.js",
   "private": true,
+  "description": "Shooting record tracking",
+  "author": {
+    "name": "Christopher K."
+  },
   "dependencies": {
-    "@angular/material": "^13.3.7"
+    "@angular/material": "^13.3.7",
+    "sqlite3": "^5.0.8"
   }
 }

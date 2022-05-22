@@ -1,12 +1,11 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
-import * as path from 'path';
+import { app, BrowserWindow, ipcMain, screen, Menu} from 'electron';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as sqlite3 from 'sqlite3';
 import * as url from 'url';
-import { IShootingRecord } from '../src/app/home/interfaces/IShootingRecord';
 
 let win: BrowserWindow = null;
 
-import * as sqlite3 from 'sqlite3'
 
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
@@ -34,6 +33,8 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
   });
+  
+  Menu.setApplicationMenu(null);
 
   if (serve) {
     const debug = require('electron-debug');
@@ -94,7 +95,14 @@ function createListeners() {
 function connectToDatabase() {
   try {
     const homedir = require('os').homedir();
-    const dbLocation = path.join(homedir, 'sampleDb.sqlite3')
+    // todo : create folder, and put db in there
+    const documentsDir = 'Documents';
+    const dir = 'shootingRecorder'
+    const fullDbPath = path.join(homedir, documentsDir, dir)
+    if (!fs.existsSync(fullDbPath)) {
+      fs.mkdirSync(fullDbPath);
+    }
+    const dbLocation = path.join(fullDbPath, 'shootingRecorder.sqlite3')
 
     db = new sqlite3.Database(dbLocation, (err) => {
 
