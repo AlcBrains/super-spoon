@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen, Menu} from 'electron';
+import { app, BrowserWindow, ipcMain, screen, Menu } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sqlite3 from 'sqlite3';
@@ -23,17 +23,17 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    x: 100,
+    y: 100,
+    width: 1500,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
   });
-  
+
   Menu.setApplicationMenu(null);
 
   if (serve) {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ElectronService } from './core/services';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript/lib/tsserverlibrary';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,7 @@ import { ElectronService } from './core/services';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   constructor(private translate: TranslateService) {
     translate.addLangs(['el']);
     translate.setDefaultLang('el');

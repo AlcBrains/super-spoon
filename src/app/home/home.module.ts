@@ -39,6 +39,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDatepickerModule,
     TranslateModule,
     MatNativeDateModule],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'el-GR' }, { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }]
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'el-GR' },
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }]
 })
 export class HomeModule { }
