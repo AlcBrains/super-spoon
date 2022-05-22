@@ -1,13 +1,14 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
+import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
 import { AddRecordComponent } from '../add-record/add-record.component';
+import * as XLSX from 'xlsx';
 
 
 
@@ -16,11 +17,11 @@ import { AddRecordComponent } from '../add-record/add-record.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShootingRecord>;
+  @ViewChild('test') test: ElementRef;
 
   public totalProfit: number;
   public profitPerUnit: number;
@@ -35,35 +36,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(public dialog: MatDialog, private electronService: ElectronService) { }
 
   ngOnInit(): void {
-
-
-    this.electronService.getAllRecords(true).subscribe((elementData) => {
-      elementData.forEach((record) => {
-        record.profitPerUnit = (record.priceSold - record.priceBought);
-        record.profit = record.profitPerUnit * record.quantity;
-      });
-      
-      this.elementData = elementData;
-      this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData);
-    })
-
-    this.selection = new SelectionModel<IShootingRecord>(true, []);
-
-
     this.monthScope = "month";
     this.setMonthScope();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor = (item, property) => {
-      switch (property) {
-        case 'saleDate': return new Date(item.saleDate);
-        default: return item[property];
-      }
-    };
-  }
 
   /**
    *  Whether the number of selected elements matches the total number of rows. 
@@ -100,16 +76,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.openDialog({} as IShootingRecord);
   }
 
-
   /**
    * Opens a modal to edit a record
    * @param record the record to edit
    */
   public editShootingRecord(record: any) {
-    //the following is a workaround, because Angular's datepicker needs dates get a preselected value.
-    const tmpRecord = { ...record };
-    tmpRecord.saleDate = moment(tmpRecord.saleDate, 'DD/MM/YYYY').toDate();
-    this.openDialog(tmpRecord);
+
+    this.openDialog({ ...record });
   }
 
   /**
@@ -127,14 +100,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   public setMonthScope() {
-    const monthToCompare = this.monthScope === 'month' ? moment().startOf('month')
-      : moment().startOf('month').subtract(6, 'months');
-    this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
     this.searchText = '';
     this.slugTypeSearch = '';
-
-    //recalculate totals
-    this.calculateTotals();
+    this.requestData(this.monthScope === 'month');
   }
 
   /**
@@ -144,26 +112,69 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.selection.clear();
     this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
     this.dataSource.filter = this.slugTypeSearch;
+    this.calculateTotals();
   }
 
   public printContent() {
-    //Do nothing yet, dunno if we want them to be printed or exported to excel. Or both :(
+    const ws = XLSX.utils.table_to_sheet(this.test.nativeElement, { raw: true });
+
+    //Removing "Edit" Column since it is not necessary
+    for (var key in ws) {
+      if (ws.hasOwnProperty(key)) {
+        if (key.startsWith("L")) delete ws[key];
+      }
+    }
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, 'records.xlsx');
   }
 
   private calculateTotals() {
     const tmp = this.selection.selected.length > 0 ? this.selection.selected : this.dataSource.filteredData;
     //Price sold - price bought, times the quantity.
-    this.totalProfit = tmp.map((record) => (record.priceSold - record.priceBought) * record.quantity)
+    this.totalProfit = tmp.map((record) => record.profit)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.profitPerUnit = tmp.map((record) => record.profitPerUnit)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
 
-    this.profitPerUnit = tmp.map((record) => (record.priceSold - record.priceBought))
-      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.setSortingDataAccessor();
+  }
+
+  private setSortingDataAccessor() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'saleDate': return moment(item.saleDate, 'DD/MM/YYYY');
+        default: return item[property];
+      }
+    };
   }
 
   private openDialog(shootingRecord: IShootingRecord) {
     this.dialog.open(AddRecordComponent, {
       width: '550px ',
       data: shootingRecord
+    }).afterClosed().subscribe((result) => {
+      if (result.reason == 'success') {
+        this.requestData(this.monthScope);
+      }
     });
+  }
+
+  private requestData(monthlyScope: boolean) {
+    this.dataSource = new MatTableDataSource<IShootingRecord>([]);
+    this.selection = new SelectionModel<IShootingRecord>(true, []);
+
+    this.electronService.getAllRecords(monthlyScope).pipe(take(1)).subscribe((elementData) => {
+      const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
+      if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
+        return;
+      }
+      this.elementData = elementData;
+      this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
+    })
+
   }
 }

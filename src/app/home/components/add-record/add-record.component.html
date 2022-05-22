@@ -47,14 +47,15 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>Τιμή αγοράς (ανα Τμχ)</b></mat-label>
+            <input matInput [(ngModel)]="record.priceBought" formControlName="priceBought">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Τιμή πώλησης (ανα Τμχ)</b></mat-label>
             <input matInput [(ngModel)]="record.priceSold" formControlName="priceSold">
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τιμή αγοράς (ανα Τμχ)</b></mat-label>
-            <input matInput [(ngModel)]="record.priceBought" formControlName="priceBought">
-        </mat-form-field>
     </div>
 </div>
 <div mat-dialog-actions align="end">

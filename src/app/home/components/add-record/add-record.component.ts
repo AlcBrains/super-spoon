@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, EventEmitter, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -20,7 +20,9 @@ export class DateStateMatcher implements ErrorStateMatcher {
   templateUrl: './add-record.component.html',
   styleUrls: ['./add-record.component.scss']
 })
-export class AddRecordComponent {
+export class AddRecordComponent implements OnInit {
+
+  public refreshRecords: EventEmitter<void> = new EventEmitter();
 
   public shootingRecordFormControl = new FormGroup({
     saleDate: new FormControl('', [Validators.required]),
@@ -38,19 +40,27 @@ export class AddRecordComponent {
     public dialogRef: MatDialogRef<AddRecordComponent>,
     @Inject(MAT_DIALOG_DATA) public record: IShootingRecord) { }
 
+
+  ngOnInit(): void {
+    this.record.saleDate = moment(this.record.saleDate, 'DD/MM/YYYY').toDate();
+  }
+
   public onSave() {
     const { value, valid } = this.shootingRecordFormControl;
     if (!valid) {
       return;
     }
-
     this.createOrUpdateRecord();
-    this.dialogRef.close();
   }
 
   private createOrUpdateRecord() {
     this.record.saleDate = moment(this.record.saleDate).format('DD/MM/YYYY');
-    this.electronService.addRecord(this.record).pipe(take(1)).subscribe();
+    //Always update record profit and profit per unit
+    this.record.profitPerUnit = this.record.priceSold - this.record.priceBought;
+    this.record.profit = (this.record.priceSold - this.record.priceBought) * this.record.quantity;
+    this.electronService.addRecord(this.record).pipe(take(1)).subscribe(() => {
+      this.dialogRef.close({ reason: 'success' })
+    })
   }
 
   public onNoClick() {

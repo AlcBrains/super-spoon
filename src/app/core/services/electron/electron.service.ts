@@ -31,17 +31,16 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-
   public getAllRecords(monthly: boolean): Observable<IShootingRecord[]> {
     return of(this.ipcRenderer.sendSync('get-items', [monthly]))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+    .pipe(catchError((error: any) => throwError(() => new Error(error))));
   }
 
-  public addRecord(item: IShootingRecord): Observable<IShootingRecord[]> {
+  public addRecord(item: IShootingRecord): Observable<void> {
     return item.id != null ? of(this.ipcRenderer.sendSync('add-item', item))
       .pipe(catchError((error: any) => throwError(() => new Error(error)))) :
-      of(this.ipcRenderer.sendSync('add-item', item))
-        .pipe(catchError((error: any) => throwError(() => new Error(error)))) 
+      of(this.ipcRenderer.send('add-item', item))
+        .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
 }

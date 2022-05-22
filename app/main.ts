@@ -5,42 +5,22 @@ import * as url from 'url';
 import { IShootingRecord } from '../src/app/home/interfaces/IShootingRecord';
 
 let win: BrowserWindow = null;
+
+import * as sqlite3 from 'sqlite3'
+
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
+let db: sqlite3.Database;
 
-const ELEMENT_DATA: IShootingRecord[] = [
-  {
-    id: 1,
-    saleDate: '05/02/2022',
-    name: 'Γιάννης Στρατήρος',
-    location: 'Ε\'ΜΚ',
-    type: 'training',
-    slugType: '9mm',
-    quantity: 2,
-    priceBought: 10,
-    priceSold: 15,
-    profitPerUnit: 0,
-    profit: 0
-  }, {
-    id: 2,
-    saleDate: '12/02/2022',
-    name: 'Βαγγέλης Κατσαΐτης',
-    location: 'Νάρρες',
-    type: 'championship',
-    slugType: '9mm',
-    quantity: 3,
-    priceBought: 11,
-    priceSold: 15,
-    profitPerUnit: 0,
-    profit: 0
-  }
-];
+const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=? , name=? , slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
+const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, name, slugType, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
 
 function createWindow(): BrowserWindow {
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
+  let db: sqlite3.Database;
 
   // Create the browser window.
   win = new BrowserWindow({
@@ -90,13 +70,62 @@ function createWindow(): BrowserWindow {
 
 function createListeners() {
   ipcMain.on('get-items', async (event: any, data: any) => {
-    event.returnValue = ELEMENT_DATA;
+    db.all('select * from shootingRecords sr ', (err, data) => {
+      event.returnValue = data
+    });
   });
 
   ipcMain.on('add-item', async (event: any, data: any) => {
-    console.log(data)
-    event.returnValue = 'ok';
+    //todo: sanitize inputs from location, name
+    let arrayToInsert = [data.saleDate, data.location, data.type, data.name, data.slugType, data.quantity, data.priceBought, data.priceSold, data.profitPerUnit, data.profit]
+    let sql = create_sql;
+    if (data.hasOwnProperty('id')) {
+      arrayToInsert.push(data.id);
+      sql = update_sql;
+    }
+    db.run(sql, ...arrayToInsert, (result: any, error: any) => {
+      console.log(sql)
+      console.log(arrayToInsert)
+      event.returnValue = 'ok';
+    })
   })
+}
+
+function connectToDatabase() {
+  try {
+    const homedir = require('os').homedir();
+    const dbLocation = path.join(homedir, 'sampleDb.sqlite3')
+
+    db = new sqlite3.Database(dbLocation, (err) => {
+
+      databaseSetup();
+      if (err) {
+        console.log('Could not connect to database', err)
+      }
+    })
+
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+function databaseSetup() {
+
+  //create tables if they don't exist, otherwise keep going
+  const sql = `
+    CREATE TABLE IF NOT EXISTS shootingRecords (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      saleDate TEXT,
+      location TEXT, 
+      type TEXT, 
+      name TEXT, 
+      slugType TEXT, 
+      quantity INTEGER, 
+      priceBought REAL, 
+      priceSold REAL, 
+      profitPerUnit REAL, 
+      profit REAL)`
+  return db.run(sql)
 }
 
 
@@ -107,6 +136,7 @@ try {
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on('ready', () => {
     createListeners();
+    connectToDatabase();
     setTimeout(createWindow, 400);
   });
 

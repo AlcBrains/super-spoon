@@ -13,16 +13,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SharedModule } from '../shared/shared.module';
 import { AddRecordComponent } from './components/add-record/add-record.component';
 import { HomeComponent } from './components/home-component/home.component';
 import { HomeRoutingModule } from './home-routing.module';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @NgModule({
   declarations: [HomeComponent, AddRecordComponent],
   imports: [
     CommonModule,
-    SharedModule,
     HomeRoutingModule,
     BrowserAnimationsModule,
     MatTableModule,
@@ -37,6 +37,7 @@ import { HomeRoutingModule } from './home-routing.module';
     MatIconModule,
     MatDialogModule,
     MatDatepickerModule,
+    TranslateModule,
     MatNativeDateModule],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'el-GR' }, { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }]
 })

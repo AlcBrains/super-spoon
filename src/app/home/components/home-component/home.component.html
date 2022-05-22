@@ -11,129 +11,131 @@
           </button>
 
         <mat-form-field appearance="fill" class="margined-search">
-            <mat-label><b>{{ 'search' | translate }}</b></mat-label>
-            <input matInput [(ngModel)]='searchText' (keyup)="filterRecords()">
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="margined-search">
-            <mat-label><b>Τύπος πυρομαχικού</b></mat-label>
-            <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="slugTypeSearch">
-                <mat-option>None</mat-option>
-                <mat-option value="9mm">0,9"</mat-option>
-                <mat-option value="40mm">0,40"</mat-option>
-                <mat-option value="22mm">0,22"</mat-option>
-                <mat-option value="45mm">0,45"</mat-option>
-                <mat-option value="308mm">0,308"</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>Προβολή</b></mat-label>
             <mat-select (selectionChange)="setMonthScope()" [(ngModel)]="monthScope">
                 <mat-option value="month">Μήνας</mat-option>
                 <mat-option value="semester">Εξάμηνο</mat-option>
             </mat-select>
         </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>Τύπος φυσιγγίου</b></mat-label>
+            <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="slugTypeSearch">
+                <mat-option>{{ 'all' | translate }}</mat-option>
+                <mat-option value="9mm">0,9"</mat-option>
+                <mat-option value="22mm">0,22"</mat-option>
+                <mat-option value="40mm">0,40"</mat-option>
+                <mat-option value="45mm">0,45"</mat-option>
+                <mat-option value="308mm">0,308"</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>{{ 'search' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]='searchText' (keyup)="filterRecords()">
+        </mat-form-field>`
+
     </div>
+    <div #test>
+        <table id="printable" class="full-width" mat-table [dataSource]="dataSource" matSort>
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th style="min-width: 50px;" mat-header-cell *matHeaderCellDef class="doNotPrint">
+                    <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row" class="doNotPrint">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-    <table id="printable" class="full-width" mat-table [dataSource]="dataSource" matSort>
-        <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
-            <th style="min-width: 50px;" mat-header-cell *matHeaderCellDef class="doNotPrint">
-                <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-                </mat-checkbox>
-            </th>
-            <td mat-cell *matCellDef="let row" class="doNotPrint">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-                </mat-checkbox>
-            </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- S Date Column -->
+            <ng-container matColumnDef="saleDate">
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>Ημερομηνία</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="saleDate"> {{element.saleDate}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- S Date Column -->
-        <ng-container matColumnDef="saleDate">
-            <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>Ημερομηνία</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="saleDate"> {{element.saleDate}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Location Column -->
+            <ng-container matColumnDef="location">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τοποθεσία</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="location"> {{element.location}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Location Column -->
-        <ng-container matColumnDef="location">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τοποθεσία</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="location"> {{element.location}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Type Column -->
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τύπος</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="type"> {{element.type | translate}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Type Column -->
-        <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τύπος</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="type"> {{element.type | translate}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ονοματεπώνυμο</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.name}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ονοματεπώνυμο</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.name}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Slug type Column -->
+            <ng-container matColumnDef="slugType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τύπος πυρομαχικού</b> </th>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.slugType}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Slug type Column -->
-        <ng-container matColumnDef="slugType">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τύπος πυρομαχικού</b> </th>
-            <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.slugType}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Slug type Column -->
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ποσότητα</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="quantity"> {{element.quantity}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Slug type Column -->
-        <ng-container matColumnDef="quantity">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ποσότητα</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="quantity"> {{element.quantity}} </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Price Sold Column -->
+            <ng-container matColumnDef="priceSold">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τιμή πώλησης (ανα Τμχ)</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="priceSold"> {{element.priceSold}} €</td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Price Sold Column -->
-        <ng-container matColumnDef="priceSold">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τιμή πώλησης (ανα Τμχ)</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="priceSold"> {{element.priceSold}} €</td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Price Bought Column -->
+            <ng-container matColumnDef="priceBought">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τιμή αγοράς (ανα Τμχ)</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="priceBought"> {{element.priceBought}} €</td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <!-- Price Bought Column -->
-        <ng-container matColumnDef="priceBought">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τιμή αγοράς (ανα Τμχ)</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="priceBought"> {{element.priceBought}} €</td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+            <!-- Profit per unit Column -->
+            <ng-container matColumnDef="profitPerUnit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Κέρδος (ανα Τμχ)</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="profitPerUnit"> {{element.profitPerUnit}} €</td>
+                <td mat-footer-cell *matFooterCellDef> {{ profitPerUnit }} € </td>
+            </ng-container>
 
-        <!-- Profit per unit Column -->
-        <ng-container matColumnDef="profitPerUnit">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Κέρδος (ανα Τμχ)</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="profitPerUnit"> {{element.profitPerUnit}} €</td>
-            <td mat-footer-cell *matFooterCellDef> {{ profitPerUnit }} € </td>
-        </ng-container>
+            <!-- Profit Column -->
+            <ng-container matColumnDef="profit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Κέρδος (Συνολικό)</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="profit"> {{element.profit}} €</td>
+                <td mat-footer-cell *matFooterCellDef> {{ totalProfit }} €</td>
+            </ng-container>
 
-        <!-- Profit Column -->
-        <ng-container matColumnDef="profit">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Κέρδος (Συνολικό)</b> </th>
-            <td mat-cell class="med" *matCellDef="let element" data-label="profit"> {{element.profit}} €</td>
-            <td mat-footer-cell *matFooterCellDef> {{ totalProfit }} €</td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef class="doNotPrint"></mat-header-cell>
-            <mat-cell *matCellDef="let row" class="doNotPrint">
-                <button class="doNotPrint" mat-mini-fab color="primary" style="margin:5px" (click)="$event.stopPropagation(); editShootingRecord(row)">
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef class="doNotPrint"></mat-header-cell>
+                <mat-cell *matCellDef="let row" class="doNotPrint">
+                    <button class="doNotPrint" mat-mini-fab color="primary" style="margin:5px" (click)="$event.stopPropagation(); editShootingRecord(row)">
                     <mat-icon class="material-symbols-outlined smaller">
                         edit
                         </mat-icon>
                 </button>
-            </mat-cell>
-            <td mat-footer-cell *matFooterCellDef></td>
-        </ng-container>
+                </mat-cell>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
-        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
-    </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        </table>
+    </div>
 </div>
