@@ -1,14 +1,13 @@
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { take } from 'rxjs';
+import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
 import { AddRecordComponent } from '../add-record/add-record.component';
-import * as XLSX from 'xlsx';
 
 
 
