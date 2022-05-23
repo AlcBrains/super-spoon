@@ -17,10 +17,11 @@ import { AddRecordComponent } from './components/add-record/add-record.component
 import { HomeComponent } from './components/home-component/home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { DeleteRecordComponent } from './components/delete-record/delete-record.component';
 
 
 @NgModule({
-  declarations: [HomeComponent, AddRecordComponent],
+  declarations: [HomeComponent, AddRecordComponent, DeleteRecordComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,

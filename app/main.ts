@@ -14,6 +14,7 @@ let db: sqlite3.Database;
 
 const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=? , name=? , slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
 const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, name, slugType, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
+const delete_sql = 'DELETE from shootingRecords where id=?'
 
 function createWindow(): BrowserWindow {
 
@@ -85,6 +86,14 @@ function createListeners() {
       sql = update_sql;
     }
     db.run(sql, ...arrayToInsert, (result: any, error: any) => {
+      event.returnValue = 'ok';
+    })
+  });
+
+  ipcMain.on('delete-item', async (event: any, data: any) => {
+    //todo: sanitize inputs from location, name
+    let sql = delete_sql;
+    db.run(sql, data, (result: any, error: any) => {
       event.returnValue = 'ok';
     })
   })

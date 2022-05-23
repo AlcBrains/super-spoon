@@ -33,7 +33,7 @@ export class ElectronService {
 
   public getAllRecords(monthly: boolean): Observable<IShootingRecord[]> {
     return of(this.ipcRenderer.sendSync('get-items', [monthly]))
-    .pipe(catchError((error: any) => throwError(() => new Error(error))));
+      .pipe(catchError((error: any) => throwError(() => new Error(error))));
   }
 
   public addRecord(item: IShootingRecord): Observable<void> {
@@ -42,5 +42,11 @@ export class ElectronService {
       of(this.ipcRenderer.send('add-item', item))
         .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
+
+  public deleteRecord(record: number): Observable<void> {
+    return of(this.ipcRenderer.sendSync('delete-item', record))
+      .pipe(catchError((error: any) => throwError(() => new Error(error))))
+  }
+
 
 }

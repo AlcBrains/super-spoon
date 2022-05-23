@@ -22,8 +22,6 @@ export class DateStateMatcher implements ErrorStateMatcher {
 })
 export class AddRecordComponent implements OnInit {
 
-  public refreshRecords: EventEmitter<void> = new EventEmitter();
-
   public shootingRecordFormControl = new FormGroup({
     saleDate: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),

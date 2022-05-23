@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
 import { AddRecordComponent } from '../add-record/add-record.component';
+import { DeleteRecordComponent } from '../delete-record/delete-record.component';
 
 
 
@@ -54,6 +55,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public editShootingRecord(record: any) {
 
     this.openDialog({ ...record });
+  }
+
+  public deleteShootingRecord(record: any) {
+    //sanity Check
+    if (record == null || !record.hasOwnProperty('id')) {
+      console.error('something has gone terribly wrong, record responsible: ', record);
+    }
+    this.dialog.open(DeleteRecordComponent, { data: record }).afterClosed().subscribe((result) => {
+      if (result != null && result.reason == 'success') {
+        this.setMonthScope(false);
+        this.calculateTotals();
+      }
+    });
   }
 
   /**
@@ -130,6 +144,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
+        this.calculateTotals();
       }
     });
   }
