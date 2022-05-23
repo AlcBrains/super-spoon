@@ -1,7 +1,7 @@
 {
-    "training": "Προπόνηση",
-    "match": "Αγώνας",
-    "championship": "Πρωταθληματικός αγώνας",
+    "B-training": "Προπόνηση",
+    "A-match": "Αγώνας",
+    "C-championship": "Πρωταθληματικός αγώνας",
     "search": "Αναζήτηση",
     "all": "Όλα",
     "selectItemsToExport": "Επιλέξτε στοιχεία προς εξαγωγή",

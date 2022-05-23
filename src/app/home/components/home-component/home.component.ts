@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -16,7 +16,7 @@ import { AddRecordComponent } from '../add-record/add-record.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShootingRecord>;
@@ -35,7 +35,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.monthScope = "month";
-    this.setMonthScope();
+    this.setMonthScope(true);
+  }
+
+  ngAfterViewInit(): void {
+    this.setSortingDataAccessor();
   }
 
 
@@ -65,10 +69,14 @@ export class HomeComponent implements OnInit {
     this.table.renderRows();
   }
 
-  public setMonthScope() {
+  public setMonthScope(init: boolean) {
     this.searchText = '';
     this.slugTypeSearch = '';
     this.requestData(this.monthScope === 'month');
+
+    if (!init) {
+      this.setSortingDataAccessor()
+    }
   }
 
   /**
@@ -78,6 +86,7 @@ export class HomeComponent implements OnInit {
     this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
     this.dataSource.filter = this.slugTypeSearch;
     this.calculateTotals();
+    this.setSortingDataAccessor();
   }
 
   public printContent() {
@@ -102,8 +111,6 @@ export class HomeComponent implements OnInit {
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
     this.profitPerUnit = +(tmp.map((record) => record.profitPerUnit)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
-
-    this.setSortingDataAccessor();
   }
 
   private setSortingDataAccessor() {
@@ -122,7 +129,7 @@ export class HomeComponent implements OnInit {
       data: shootingRecord
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.requestData(this.monthScope);
+        this.setMonthScope(false);
       }
     });
   }
