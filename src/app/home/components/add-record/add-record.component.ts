@@ -30,8 +30,8 @@ export class AddRecordComponent implements OnInit {
     type: new FormControl('', [Validators.required]),
     location: new FormControl('', [Validators.required]),
     slugType: new FormControl('', [Validators.required]),
-    priceSold: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')]),
-    priceBought: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')]),
+    priceSold: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
+    priceBought: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
     quantity: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')])
   })
 
@@ -56,8 +56,9 @@ export class AddRecordComponent implements OnInit {
   private createOrUpdateRecord() {
     this.record.saleDate = moment(this.record.saleDate).format('DD/MM/YYYY');
     //Always update record profit and profit per unit
-    this.record.profitPerUnit = this.record.priceSold - this.record.priceBought;
-    this.record.profit = (this.record.priceSold - this.record.priceBought) * this.record.quantity;
+    //Workaround to ensure that float values are properly 
+    this.record.profitPerUnit = +(this.record.priceSold - this.record.priceBought).toFixed(2);
+    this.record.profit = +((this.record.priceSold - this.record.priceBought) * this.record.quantity).toFixed(2);
     this.electronService.addRecord(this.record).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })

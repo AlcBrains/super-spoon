@@ -98,10 +98,10 @@ export class HomeComponent implements OnInit {
   private calculateTotals() {
     const tmp = this.dataSource.filteredData;
     //Price sold - price bought, times the quantity.
-    this.totalProfit = tmp.map((record) => record.profit)
-      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
-    this.profitPerUnit = tmp.map((record) => record.profitPerUnit)
-      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    this.totalProfit = +(tmp.map((record) => record.profit)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
+    this.profitPerUnit = +(tmp.map((record) => record.profitPerUnit)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
 
     this.setSortingDataAccessor();
   }

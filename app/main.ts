@@ -85,8 +85,6 @@ function createListeners() {
       sql = update_sql;
     }
     db.run(sql, ...arrayToInsert, (result: any, error: any) => {
-      console.log(sql)
-      console.log(arrayToInsert)
       event.returnValue = 'ok';
     })
   })
