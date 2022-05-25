@@ -23,7 +23,6 @@ export class DeleteRecordComponent implements OnInit {
   }
 
   public onDelete() {
-    console.log(this.record)
     this.electronService.deleteRecord(this.record.id).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })

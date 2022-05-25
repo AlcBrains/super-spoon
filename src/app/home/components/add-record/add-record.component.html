@@ -25,24 +25,24 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Όνομα</b></mat-label>
+            <mat-label><b>{{ 'shooter' | translate}}</b></mat-label>
             <input matInput [(ngModel)]="record.name" formControlName="name">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τύπος πυρομαχικού</b></mat-label>
+            <mat-label><b>{{ 'ammoType' | translate }}</b></mat-label>
             <mat-select [(ngModel)]="record.slugType" formControlName="slugType">
                 <mat-option>None</mat-option>
-                <mat-option value="9mm">0,9"</mat-option>
-                <mat-option value="40mm">0,40"</mat-option>
-                <mat-option value="22mm">0,22"</mat-option>
-                <mat-option value="45mm">0,45"</mat-option>
-                <mat-option value="308mm">0,308"</mat-option>
+                <mat-option value="9mm">9mm</mat-option>
+                <mat-option value="0.22&quot;">0.22"</mat-option>
+                <mat-option value="0.40&quot;">0.40"</mat-option>
+                <mat-option value="0.45&quot;">0.45"</mat-option>
+                <mat-option value="0.308&quot;">0.308"</mat-option>
             </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Ποσότητα</b></mat-label>
+            <mat-label><b>{{ 'quantity' | translate }}</b></mat-label>
             <input matInput [(ngModel)]="record.quantity" formControlName="quantity">
         </mat-form-field>
 

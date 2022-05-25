@@ -19,7 +19,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margined-search">
-            <mat-label><b>Τύπος φυσιγγίου</b></mat-label>
+            <mat-label><b>Διαμέτρημα</b></mat-label>
             <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="slugTypeSearch">
                 <mat-option>{{ 'all' | translate }}</mat-option>
                 <mat-option value="9mm">0,9"</mat-option>
@@ -62,21 +62,21 @@
 
             <!-- Name Column -->
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ονοματεπώνυμο</b> </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'shooter' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.name}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Slug type Column -->
             <ng-container matColumnDef="slugType">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Τύπος πυρομαχικού</b> </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'ammoType' | translate }}</b> </th>
                 <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.slugType}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Slug type Column -->
             <ng-container matColumnDef="quantity">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>Ποσότητα</b> </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantity' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="quantity"> {{element.quantity}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>

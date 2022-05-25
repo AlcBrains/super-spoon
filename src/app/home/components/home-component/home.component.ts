@@ -45,7 +45,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
 
   public createShootingRecord(): void {
-    this.openDialog({} as IShootingRecord);
+    let tmpRecord = {} as IShootingRecord;
+    if (this.elementData != null && this.elementData.length > 0 ) {
+      tmpRecord = {...this.elementData[this.elementData.length -1]} ;
+      delete tmpRecord["id"];
+      delete tmpRecord["name"];
+    }
+    this.openDialog(tmpRecord as IShootingRecord);
   }
 
   /**
@@ -153,10 +159,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
     this.electronService.getAllRecords(monthlyScope).pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
+      this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;
       }
-      this.elementData = elementData;
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.calculateTotals();
     })
