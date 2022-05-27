@@ -3,7 +3,7 @@
     <div [formGroup]="shootingRecordFormControl">
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Ημερομηνία</b></mat-label>
-            <input matInput [matDatepicker]="picker" [(ngModel)]="record.saleDate" formControlName="saleDate">
+            <input matInput [matDatepicker]="picker" [(ngModel)]="data.record.saleDate" formControlName="saleDate">
             <mat-hint>ΗΗ/ΜΜ/ΕΕΕΕ</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
@@ -11,12 +11,12 @@
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Τοποθεσία</b></mat-label>
-            <input matInput [(ngModel)]="record.location" formControlName="location">
+            <input matInput [(ngModel)]="data.record.location" formControlName="location">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Τύπος</b></mat-label>
-            <mat-select [(ngModel)]="record.type" formControlName="type">
+            <mat-select [(ngModel)]="data.record.type" formControlName="type">
                 <mat-option>None</mat-option>
                 <mat-option value="A-match">Αγώνας</mat-option>
                 <mat-option value="B-training">Προπόνηση</mat-option>
@@ -26,12 +26,14 @@
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'shooter' | translate}}</b></mat-label>
-            <input matInput [(ngModel)]="record.name" formControlName="name">
+            <mat-select multiple formControlName="name">
+                <mat-option *ngFor="let shooter of data.shooters" [value]="shooter.id">{{ shooter.name }}</mat-option>
+            </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'ammoType' | translate }}</b></mat-label>
-            <mat-select [(ngModel)]="record.slugType" formControlName="slugType">
+            <mat-select [(ngModel)]="data.record.slugType" formControlName="slugType">
                 <mat-option>None</mat-option>
                 <mat-option value="9mm">9mm</mat-option>
                 <mat-option value="0.22&quot;">0.22"</mat-option>
@@ -43,17 +45,17 @@
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'quantity' | translate }}</b></mat-label>
-            <input matInput [(ngModel)]="record.quantity" formControlName="quantity">
+            <input matInput [(ngModel)]="data.record.quantity" formControlName="quantity">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Τιμή αγοράς (ανα Τμχ)</b></mat-label>
-            <input matInput [(ngModel)]="record.priceBought" formControlName="priceBought">
+            <input matInput [(ngModel)]="data.record.priceBought" formControlName="priceBought">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>Τιμή πώλησης (ανα Τμχ)</b></mat-label>
-            <input matInput [(ngModel)]="record.priceSold" formControlName="priceSold">
+            <input matInput [(ngModel)]="data.record.priceSold" formControlName="priceSold">
         </mat-form-field>
 
     </div>

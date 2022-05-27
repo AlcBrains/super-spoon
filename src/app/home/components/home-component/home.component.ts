@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { take } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
+import { IShooter } from '../../interfaces/IShooter';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
 import { AddRecordComponent } from '../add-record/add-record.component';
 import { DeleteRecordComponent } from '../delete-record/delete-record.component';
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public totalProfit: number;
   public profitPerUnit: number;
   public slugTypeSearch: string;
+  private shooters: IShooter[];
   public searchText: any;
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
@@ -41,6 +43,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.monthScope = "month";
     this.setMonthScope(true);
+    this.getShooters();
   }
 
   ngAfterViewInit(): void {
@@ -150,7 +153,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private openDialog(shootingRecord: IShootingRecord) {
     this.dialog.open(AddRecordComponent, {
       width: '550px ',
-      data: shootingRecord
+      data: { record: shootingRecord, shooters: this.shooters }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
@@ -171,6 +174,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.calculateTotals();
     })
+  }
 
+  private getShooters() {
+    this.electronService.getAllShooters().pipe(take(1)).subscribe((shooters) => {
+      this.shooters = shooters;
+    })
   }
 }
