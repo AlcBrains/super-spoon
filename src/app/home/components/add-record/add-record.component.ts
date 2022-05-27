@@ -41,7 +41,6 @@ export class AddRecordComponent implements OnInit {
     public dialogRef: MatDialogRef<AddRecordComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any ) { 
       this.shooters = this.data.shooters;
-      console.log(this.shooters)
     }
 
 

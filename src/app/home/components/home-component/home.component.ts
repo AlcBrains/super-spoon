@@ -66,8 +66,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * @param record the record to edit
    */
   public editShootingRecord(record: any) {
-
-    this.openDialog({ ...record });
+    let tmpRecord = { ...record };
+    tmpRecord.shooterId = [tmpRecord.shooterId]
+    this.openDialog(tmpRecord);
   }
 
   public deleteShootingRecord(record: any) {
@@ -90,7 +91,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public filterRecords() {
 
     //filter Records by name :
-    this.dataSource.filterPredicate = ((data, filter) => data.name.toLowerCase().includes(filter.toLowerCase()));
+    this.dataSource.filterPredicate = ((data, filter) => data.shooterName.toLowerCase().includes(filter.toLowerCase()));
     this.dataSource.filter = this.searchText;
     this.calculateTotals();
     this.table.renderRows();
@@ -153,7 +154,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private openDialog(shootingRecord: IShootingRecord) {
     this.dialog.open(AddRecordComponent, {
       width: '550px ',
-      data: { record: shootingRecord, shooters: this.shooters }
+      data: { record: shootingRecord, shooters: this.shooters, disabled: shootingRecord.id != null }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
@@ -166,7 +167,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
     this.electronService.getAllRecords(monthlyScope).pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
-      console.log(elementData)
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;

@@ -3,7 +3,8 @@ export interface IShootingRecord {
   saleDate: any;
   location: string;
   type: string;
-  name: string;
+  shooterName: string;
+  shooterId: number;
   slugType: string;
   quantity: number;
   priceBought: number;
