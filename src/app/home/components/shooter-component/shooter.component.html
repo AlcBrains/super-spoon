@@ -1,0 +1,56 @@
+<div class="container" class="mat-elevation-z8">
+    <div style="padding-top:5px">
+        <button mat-fab color="primary" class="first-button margined-button" (click)="createShooter()"><mat-icon class="material-symbols-outlined">
+          add
+          </mat-icon>
+        </button>
+        <button mat-fab color="primary" class="margined-button" (click)="printContent()"><mat-icon class="material-symbols-outlined">
+            print
+            </mat-icon>
+          </button>
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>{{ 'search' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]='searchText' (keyup)="filterRecords()">
+        </mat-form-field>`
+
+    </div>
+    <div #test>
+        <table class="full-width" mat-table [dataSource]="dataSource" matSort>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'shooter' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.name}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- Slug type Column -->
+            <ng-container matColumnDef="dai">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'dai' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="dai"> {{element.dai}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <button mat-mini-fab color="primary" style="margin:5px" (click)="$event.stopPropagation(); editShooter(row)">
+                    <mat-icon class="material-symbols-outlined smaller">
+                        edit
+                        </mat-icon>
+                    </button>
+                    <button mat-mini-fab color="warn" style="margin:5px" (click)="$event.stopPropagation(); deleteShooter(row)">
+                        <mat-icon class="material-symbols-outlined smaller">
+                            delete
+                            </mat-icon>
+                        </button>
+                </mat-cell>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        </table>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
@@ -22,6 +23,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShootingRecord>;
   @ViewChild('test') test: ElementRef;
+
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
 
   public totalProfit: number;
   public profitPerUnit: number;
@@ -46,8 +50,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public createShootingRecord(): void {
     let tmpRecord = {} as IShootingRecord;
-    if (this.elementData != null && this.elementData.length > 0 ) {
-      tmpRecord = {...this.elementData[this.elementData.length -1]} ;
+    if (this.elementData != null && this.elementData.length > 0) {
+      tmpRecord = { ...this.elementData[this.elementData.length - 1] };
       delete tmpRecord["id"];
       delete tmpRecord["name"];
     }
@@ -159,6 +163,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
     this.electronService.getAllRecords(monthlyScope).pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
+      console.log(elementData)
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;

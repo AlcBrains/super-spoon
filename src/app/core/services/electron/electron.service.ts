@@ -5,6 +5,7 @@ import * as childProcess from 'child_process';
 import { ipcRenderer, webFrame } from 'electron';
 import * as fs from 'fs';
 import { catchError, Observable, of, throwError } from 'rxjs';
+import { IShooter } from '../../../home/interfaces/IShooter';
 import { IShootingRecord } from '../../../home/interfaces/IShootingRecord';
 
 
@@ -37,12 +38,28 @@ export class ElectronService {
   }
 
   public addRecord(item: IShootingRecord): Observable<void> {
-    return of(this.ipcRenderer.send('add-item', item))
+    return of(this.ipcRenderer.sendSync('add-item', item))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
   public deleteRecord(record: number): Observable<void> {
     return of(this.ipcRenderer.sendSync('delete-item', record))
+      .pipe(catchError((error: any) => throwError(() => new Error(error))))
+  }
+
+  public getAllShooters(): Observable<IShooter[]> {
+    return of(this.ipcRenderer.sendSync('get-shooters'))
+      .pipe(catchError((error: any) => throwError(() => new Error(error))));
+  }
+
+  public addShooter(shooter: IShooter): Observable<void> {
+    console.log(shooter)
+    return of(this.ipcRenderer.sendSync('add-shooter', shooter))
+      .pipe(catchError((error: any) => throwError(() => new Error(error))))
+  }
+
+  public deleteShooter(shooterId: number): Observable<void> {
+    return of(this.ipcRenderer.sendSync('delete-shooter', shooterId))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 

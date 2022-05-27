@@ -1,1 +1,11 @@
-<router-outlet></router-outlet>
+<div>
+    <button class="small-margin" mat-raised-button color="primary" [routerLink]="['']">
+        <mat-icon>receipt</mat-icon>
+        <span>Home</span>
+    </button>
+    <button class="small-margin" mat-raised-button color="primary" [routerLink]="['/shooters']">
+        <mat-icon>person</mat-icon>
+        <span>Σκοπευτές</span>
+        </button>
+    <router-outlet></router-outlet>
+</div>

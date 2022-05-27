@@ -1,3 +1,4 @@
+import { DebugNode } from '@angular/core';
 import { app, BrowserWindow, ipcMain, screen, Menu } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,6 +16,11 @@ let db: sqlite3.Database;
 const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=? , name=? , slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
 const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, name, slugType, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
 const delete_sql = 'DELETE from shootingRecords where id=?'
+
+
+const create_shooter_sql = 'INSERT INTO shooters (name, dai) VALUES (?, ?) '
+const update_shooter_sql = 'UPDATE shooters set name=?, dai=? WHERE id=?'
+const delete_shooter_sql = 'DELETE from shooters where id=?'
 
 function createWindow(): BrowserWindow {
 
@@ -72,13 +78,38 @@ function createWindow(): BrowserWindow {
 
 function createListeners() {
   ipcMain.on('get-items', async (event: any, data: any) => {
-    db.all('select * from shootingRecords sr ', (err, data) => {
+    db.all('select * from v_all_shooterRecords v_sr ', (err, data) => {
       event.returnValue = data
     });
   });
 
+  ipcMain.on('get-shooters', async (event: any, data: any) => {
+    db.all('select * from shooters s ', (err, data) => {
+      event.returnValue = data
+    });
+  })
+
+  ipcMain.on('add-shooter', async (event: any, data: any) => {
+    let arrayToInsert = [data.name, data.dai];
+    let sql = create_shooter_sql;
+
+    if (data.hasOwnProperty('id')) {
+      arrayToInsert.push(data.id);
+      sql = update_shooter_sql;
+    }
+    db.run(sql, ...arrayToInsert, (result: any, error: any) => {
+      event.returnValue = 'ok';
+    })
+  })
+
+  ipcMain.on('delete-shooter', async (event: any, data: any) => {
+    let sql = delete_shooter_sql;
+    db.run(sql, data, (result: any, error: any) => {
+      event.returnValue = 'ok';
+    })
+  })
+
   ipcMain.on('add-item', async (event: any, data: any) => {
-    //todo: sanitize inputs from location, name
     let arrayToInsert = [data.saleDate, data.location, data.type, data.name, data.slugType, data.quantity, data.priceBought, data.priceSold, data.profitPerUnit, data.profit]
     let sql = create_sql;
     if (data.hasOwnProperty('id')) {
@@ -91,7 +122,6 @@ function createListeners() {
   });
 
   ipcMain.on('delete-item', async (event: any, data: any) => {
-    //todo: sanitize inputs from location, name
     let sql = delete_sql;
     db.run(sql, data, (result: any, error: any) => {
       event.returnValue = 'ok';
@@ -113,7 +143,9 @@ function connectToDatabase() {
 
     db = new sqlite3.Database(dbLocation, (err) => {
 
-      databaseSetup();
+      createShooterTable();
+      createRecordsTable();
+      createViews();
       if (err) {
         console.log('Could not connect to database', err)
       }
@@ -124,7 +156,23 @@ function connectToDatabase() {
   }
 }
 
-function databaseSetup() {
+function createShooterTable() {
+  const sql = `
+    CREATE TABLE IF NOT EXISTS shooters (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      dai TEXT)`
+  return db.run(sql)
+}
+
+
+function createViews() {
+  const sql = `DROP VIEW IF EXISTS v_all_shooterRecords;
+  CREATE v_all_shooterRecords AS select sr.*, s.name from shootingRecords sr join shooters s on s.id = sr.shooter_id;`
+  return db.run(sql);
+}
+
+function createRecordsTable() {
 
   //create tables if they don't exist, otherwise keep going
   const sql = `
@@ -133,13 +181,14 @@ function databaseSetup() {
       saleDate TEXT,
       location TEXT, 
       type TEXT, 
-      name TEXT, 
+      shooter_id INTEGER,
       slugType TEXT, 
       quantity INTEGER, 
       priceBought REAL, 
       priceSold REAL, 
       profitPerUnit REAL, 
-      profit REAL)`
+      profit REAL,
+      FOREIGN KEY(shooter_id) REFERENCES shooter(id))`
   return db.run(sql)
 }
 

@@ -13,15 +13,24 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AddRecordComponent } from './components/add-record/add-record.component';
-import { HomeComponent } from './components/home-component/home.component';
-import { HomeRoutingModule } from './home-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { AddRecordComponent } from './components/add-record/add-record.component';
+import { AddShooterComponent } from './components/add-shooter/add-shooter.component';
 import { DeleteRecordComponent } from './components/delete-record/delete-record.component';
+import { DeleteShooterComponent } from './components/delete-shooter/delete-shooter.component';
+import { HomeComponent } from './components/home-component/home.component';
+import { ShooterComponent } from './components/shooter-component/shooter.component';
+import { HomeRoutingModule } from './home-routing.module';
 
 
 @NgModule({
-  declarations: [HomeComponent, AddRecordComponent, DeleteRecordComponent],
+  declarations: [
+    HomeComponent,
+    AddRecordComponent,
+    DeleteRecordComponent,
+    AddShooterComponent,
+    DeleteShooterComponent,
+    ShooterComponent],
   imports: [
     CommonModule,
     HomeRoutingModule,
