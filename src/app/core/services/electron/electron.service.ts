@@ -53,7 +53,6 @@ export class ElectronService {
   }
 
   public addShooter(shooter: IShooter): Observable<void> {
-    console.log(shooter)
     return of(this.ipcRenderer.sendSync('add-shooter', shooter))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
