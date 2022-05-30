@@ -132,16 +132,7 @@ function createListeners() {
 
 function connectToDatabase() {
   try {
-    const homedir = require('os').homedir();
-    // todo : create folder, and put db in there
-    const documentsDir = 'Documents';
-    const dir = 'shootingRecorder'
-    const fullDbPath = path.join(homedir, documentsDir, dir)
-    if (!fs.existsSync(fullDbPath)) {
-      fs.mkdirSync(fullDbPath);
-    }
-    const dbLocation = path.join(fullDbPath, 'shootingRecorder.sqlite3')
-
+    const dbLocation = path.join(app.getAppPath(), 'shootingRecorder.sqlite3')
     db = new sqlite3.Database(dbLocation, (err) => {
 
       createShooterTable();

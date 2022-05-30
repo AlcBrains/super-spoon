@@ -26,7 +26,7 @@
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'shooter' | translate}}</b></mat-label>
-            <mat-select multiple formControlName="name" [(ngModel)]="data.record.shooterId" disabled="this.data.disabled">
+            <mat-select multiple formControlName="name" [(ngModel)]="data.record.shooterId" [disabled]="this.data.disabled">
                 <mat-option *ngFor="let shooter of data.shooters" [value]="shooter.id">{{ shooter.name }}</mat-option>
             </mat-select>
         </mat-form-field>
