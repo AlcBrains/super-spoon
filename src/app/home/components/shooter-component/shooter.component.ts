@@ -94,6 +94,7 @@ export class ShooterComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
+        case 'dai': return Number(item['dai'])
         default: return item[property];
       }
     };
@@ -106,6 +107,7 @@ export class ShooterComponent implements OnInit, AfterViewInit {
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.getShooters();
+        this.setSortingDataAccessor();
       }
     });
   }
