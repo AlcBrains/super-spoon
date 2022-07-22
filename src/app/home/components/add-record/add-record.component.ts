@@ -6,7 +6,6 @@ import * as moment from 'moment';
 import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
 import { IShooter } from '../../interfaces/IShooter';
-import { IShootingRecord } from '../../interfaces/IShootingRecord';
 
 export class DateStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -39,9 +38,9 @@ export class AddRecordComponent implements OnInit {
   constructor(
     private electronService: ElectronService,
     public dialogRef: MatDialogRef<AddRecordComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any ) { 
-      this.shooters = this.data.shooters;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.shooters = this.data.shooters;    
+  }
 
 
   ngOnInit(): void {

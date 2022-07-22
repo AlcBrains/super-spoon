@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
 import { IShooter } from '../../interfaces/IShooter';
 import { AddShooterComponent } from '../add-shooter/add-shooter.component';
-import { DeleteShooterComponent } from '../delete-shooter/delete-shooter.component';
+import { DeleteRecordComponent } from '../delete-record/delete-record.component';
 
 
 
@@ -55,7 +55,8 @@ export class ShooterComponent implements OnInit, AfterViewInit {
     if (record == null || !record.hasOwnProperty('id')) {
       console.error('something has gone terribly wrong, record responsible: ', record);
     }
-    this.dialog.open(DeleteShooterComponent, { data: record }).afterClosed().subscribe((result) => {
+    console.log(record)
+    this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IShooter" } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.getShooters();
       }
@@ -114,7 +115,7 @@ export class ShooterComponent implements OnInit, AfterViewInit {
 
   private getShooters() {
     this.dataSource = new MatTableDataSource<IShooter>([]);
-    this.electronService.getAllShooters().pipe(take(1)).subscribe((elementData) => {
+    this.electronService.getAllRecords('shooters').pipe(take(1)).subscribe((elementData) => {
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;
       }

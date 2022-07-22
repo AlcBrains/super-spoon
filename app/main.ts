@@ -12,14 +12,18 @@ const args = process.argv.slice(1),
 
 let db: sqlite3.Database;
 
-const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=?, shooter_id=?, slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
 const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, shooter_id, slugType, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
+const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=?, shooter_id=?, slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
 const delete_sql = 'DELETE from shootingRecords where id=?'
 
+const create_vault_record_sql = 'Insert into vaultRecords () VALUES()'
+const update_vault_record_sql = 'UPDATE vaultRecords set , , , , , where id=?'
+const delete_vault_record_sql = 'DELETE from vaultRecords where id=?'
 
 const create_shooter_sql = 'INSERT INTO shooters (name, dai) VALUES (?, ?) '
 const update_shooter_sql = 'UPDATE shooters set name=?, dai=? WHERE id=?'
 const delete_shooter_sql = 'DELETE from shooters where id=?'
+
 
 function createWindow(): BrowserWindow {
 
@@ -77,16 +81,10 @@ function createWindow(): BrowserWindow {
 
 function createListeners() {
   ipcMain.on('get-items', async (event: any, data: any) => {
-    db.all('select * from v_all_shooterRecords v_sr ', (err, data) => {
+    db.all('select * from ' + data + ' v_sr ', (err, data) => {
       event.returnValue = data
     });
   });
-
-  ipcMain.on('get-shooters', async (event: any, data: any) => {
-    db.all('select * from shooters s ', (err, data) => {
-      event.returnValue = data
-    });
-  })
 
   ipcMain.on('add-shooter', async (event: any, data: any) => {
     let arrayToInsert = [data.name, data.dai];
@@ -97,13 +95,6 @@ function createListeners() {
       sql = update_shooter_sql;
     }
     db.run(sql, ...arrayToInsert, (result: any, error: any) => {
-      event.returnValue = 'ok';
-    })
-  })
-
-  ipcMain.on('delete-shooter', async (event: any, data: any) => {
-    let sql = delete_shooter_sql;
-    db.run(sql, data, (result: any, error: any) => {
       event.returnValue = 'ok';
     })
   })
@@ -123,8 +114,22 @@ function createListeners() {
   });
 
   ipcMain.on('delete-item', async (event: any, data: any) => {
-    let sql = delete_sql;
-    db.run(sql, data, (result: any, error: any) => {
+
+    let sql;
+    
+    switch (data.recordType) {
+      case 'IShooter':
+        sql = delete_shooter_sql;
+        break;
+      case 'IShootingRecord':
+        sql = delete_sql;
+        break;
+      case 'IVaultRecord': 
+        sql = delete_vault_record_sql;
+        break;
+    }
+
+    db.run(sql, data.id, (result: any, error: any) => {
       event.returnValue = 'ok';
     })
   })
@@ -134,27 +139,15 @@ function connectToDatabase() {
   try {
     const dbLocation = path.join(app.getAppPath(), 'shootingRecorder.sqlite3')
     db = new sqlite3.Database(dbLocation, (err) => {
-
       createShooterTable();
       createRecordsTable();
+      createVaultRecordsTable();
       dropExistingView();
-      if (err) {
-        console.log('Could not connect to database', err)
-      }
     })
 
   } catch (e) {
     console.log(e)
   }
-}
-
-function createShooterTable() {
-  const sql = `
-    CREATE TABLE IF NOT EXISTS shooters (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT,
-      dai TEXT)`
-  return db.run(sql)
 }
 
 
@@ -188,6 +181,31 @@ function createRecordsTable() {
   return db.run(sql)
 }
 
+function createVaultRecordsTable() {
+  //create tables if they don't exist, otherwise keep going
+  const sql = `
+    CREATE TABLE IF NOT EXISTS vaultRecords (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      supplierName TEXT,
+      slugType TEXT, 
+      quantityType TEXT, 
+      quantity INTEGER,
+      licenceNo TEXT, 
+      purchaseDate TEXT)`
+  return db.run(sql)
+}
+
+
+function createShooterTable() {
+  const sql = `
+    CREATE TABLE IF NOT EXISTS shooters (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      dai TEXT)`
+  return db.run(sql)
+}
+
+
 
 try {
   // This method will be called when Electron has finished
@@ -220,5 +238,5 @@ try {
 
 } catch (e) {
   // Catch Error
-  // throw e;
+  throw e;
 }

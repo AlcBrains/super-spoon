@@ -5,7 +5,11 @@
     </button>
     <button class="small-margin" mat-raised-button color="primary" [routerLink]="['/shooters']">
         <mat-icon>person</mat-icon>
-        <span>Σκοπευτές</span>
-        </button>
+        <span>{{ 'shooters' | translate}}</span>
+    </button>
+    <button class="small-margin" mat-raised-button color="primary" [routerLink]="['/vault']">
+        <mat-icon>vault</mat-icon>
+        <span>{{ 'vault' | translate}}</span>
+    </button>
     <router-outlet></router-outlet>
 </div>

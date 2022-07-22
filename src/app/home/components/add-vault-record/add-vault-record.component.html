@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Νέα καταχώρηση</h1>
+<div mat-dialog-content>
+    <div [formGroup]="shooterFormControl">
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'shooter' | translate}}</b></mat-label>
+            <input matInput [(ngModel)]="shooter.name" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'dai' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]="shooter.dai" formControlName="dai">
+        </mat-form-field>
+
+    </div>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-raised-button (click)="onNoClick()">Ακύρωση</button>
+    <button mat-raised-button color="primary" (click)="onSave()" cdkFocusInitial>Ok</button>
+</div>

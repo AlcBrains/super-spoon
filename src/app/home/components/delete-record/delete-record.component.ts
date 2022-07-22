@@ -16,14 +16,15 @@ export class DeleteRecordComponent implements OnInit {
   constructor(
     private electronService: ElectronService,
     public dialogRef: MatDialogRef<DeleteRecordComponent>,
-    @Inject(MAT_DIALOG_DATA) public record: IShootingRecord) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
 
   ngOnInit(): void {
+
   }
 
   public onDelete() {
-    this.electronService.deleteRecord(this.record.id).pipe(take(1)).subscribe(() => {
+    this.electronService.deleteRecord({recordType: this.data.recordType , id: this.data.record.id}).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })
   }

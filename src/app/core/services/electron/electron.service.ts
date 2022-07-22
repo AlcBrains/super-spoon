@@ -32,35 +32,24 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  public getAllRecords(monthly: boolean): Observable<IShootingRecord[]> {
-    return of(this.ipcRenderer.sendSync('get-items', [monthly]))
+  public getAllRecords(recordType: any): Observable<any[]> {
+    return of(this.ipcRenderer.sendSync('get-items', [recordType]))
       .pipe(catchError((error: any) => throwError(() => new Error(error))));
   }
 
-  public addRecord(item: IShootingRecord): Observable<void> {
+  public addRecord(item: any): Observable<void> {
     return of(this.ipcRenderer.sendSync('add-item', item))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
-  public deleteRecord(record: number): Observable<void> {
-    return of(this.ipcRenderer.sendSync('delete-item', record))
+  public deleteRecord(recordObject): Observable<void> {
+    return of(this.ipcRenderer.sendSync('delete-item', recordObject))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
-  }
-
-  public getAllShooters(): Observable<IShooter[]> {
-    return of(this.ipcRenderer.sendSync('get-shooters'))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))));
   }
 
   public addShooter(shooter: IShooter): Observable<void> {
     return of(this.ipcRenderer.sendSync('add-shooter', shooter))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
-
-  public deleteShooter(shooterId: number): Observable<void> {
-    return of(this.ipcRenderer.sendSync('delete-shooter', shooterId))
-      .pipe(catchError((error: any) => throwError(() => new Error(error))))
-  }
-
 
 }

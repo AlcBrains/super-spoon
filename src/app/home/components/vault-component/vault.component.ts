@@ -8,21 +8,21 @@ import { take } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
 import { IShooter } from '../../interfaces/IShooter';
-import { IShootingRecord } from '../../interfaces/IShootingRecord';
-import { AddRecordComponent } from '../add-record/add-record.component';
+import { IVaultRecord } from '../../interfaces/IVaultRecord';
+import { AddVaultRecordComponent } from '../add-vault-record/add-vault-record.component';
 import { DeleteRecordComponent } from '../delete-record/delete-record.component';
 
 
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'app-vault',
+  templateUrl: './vault.component.html',
+  styleUrls: ['./vault.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class VaultComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<IShootingRecord>;
+  @ViewChild(MatTable) table: MatTable<IVaultRecord>;
   @ViewChild('test') test: ElementRef;
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
@@ -31,19 +31,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public totalProfit: number;
   public profitPerUnit: number;
   public slugTypeSearch: string;
-  private shooters: IShooter[];
   public searchText: any;
   public monthScope: any;
-  public dataSource: MatTableDataSource<IShootingRecord>;
-  public elementData: IShootingRecord[];
-  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'slugType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
+  public dataSource: MatTableDataSource<IVaultRecord>;
+  public elementData: IVaultRecord[];
+  public displayedColumns: string[] = ['supplierName', 'slugType', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate'];
+  /**
+   * 
+   * supplierName: string;
+   * slugType: string;
+   * quantityType: string;
+   * quantity: number;
+   * licenceNo: string;
+   * purchaseDate: any;
+   */
 
   constructor(public dialog: MatDialog, private electronService: ElectronService) { }
 
   ngOnInit(): void {
     this.monthScope = "month";
     this.setMonthScope(true);
-    this.getShooters();
   }
 
   ngAfterViewInit(): void {
@@ -51,35 +58,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
 
-  public createShootingRecord(): void {
-    let tmpRecord = {} as IShootingRecord;
+  public createVaultRecord(): void {
+    let tmpRecord = {} as IVaultRecord;
     if (this.elementData != null && this.elementData.length > 0) {
       tmpRecord = { ...this.elementData[this.elementData.length - 1] };
       delete tmpRecord["id"];
       delete tmpRecord["name"];
     }
-    this.openDialog(tmpRecord as IShootingRecord);
+    this.openDialog(tmpRecord as IVaultRecord);
   }
 
   /**
    * Opens a modal to edit a record
    * @param record the record to edit
    */
-  public editShootingRecord(record: any) {
+  public editVaultRecord(record: any) {
     let tmpRecord = { ...record };
     tmpRecord.shooterId = [tmpRecord.shooterId]
     this.openDialog(tmpRecord);
   }
 
-  public deleteShootingRecord(record: any) {
+  public deleteVaultRecord(record: any) {
     //sanity Check
     if (record == null || !record.hasOwnProperty('id')) {
       console.error('something has gone terribly wrong, record responsible: ', record);
     }
-    this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IShootingRecord" } }).afterClosed().subscribe((result) => {
+    this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IVaultRecord" } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
-        this.calculateTotals();
       }
     });
   }
@@ -91,9 +97,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public filterRecords() {
 
     //filter Records by name :
-    this.dataSource.filterPredicate = ((data, filter) => data.shooterName.toLowerCase().includes(filter.toLowerCase()));
+    this.dataSource.filterPredicate = ((data, filter) => data.supplierName.toLowerCase().includes(filter.toLowerCase()));
     this.dataSource.filter = this.searchText;
-    this.calculateTotals();
     this.table.renderRows();
   }
 
@@ -113,7 +118,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public changeAmmoType() {
     this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
     this.dataSource.filter = this.slugTypeSearch;
-    this.calculateTotals();
     this.setSortingDataAccessor();
   }
 
@@ -132,55 +136,39 @@ export class HomeComponent implements OnInit, AfterViewInit {
     XLSX.writeFile(wb, 'records.xlsx');
   }
 
-  private calculateTotals() {
-    const tmp = this.dataSource.filteredData;
-    //Price sold - price bought, times the quantity.
-    this.totalProfit = +(tmp.map((record) => record.profit)
-      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
-    this.profitPerUnit = +(tmp.map((record) => record.profitPerUnit)
-      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)).toFixed(2);
-  }
+
 
   private setSortingDataAccessor() {
     this.dataSource.sort = this.sort;
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
-        case 'saleDate': return moment(item.saleDate, 'DD/MM/YYYY');
+        case 'purchaseDate': return moment(item.purchaseDate, 'DD/MM/YYYY');
         default: return item[property];
       }
     };
   }
 
-  private openDialog(shootingRecord: any) {
-    console.log(shootingRecord);
-    shootingRecord.shooterId = [shootingRecord.shooterId]
-    this.dialog.open(AddRecordComponent, {
+  private openDialog(shootingRecord: IVaultRecord) {
+    this.dialog.open(AddVaultRecordComponent, {
       width: '550px ',
-      data: { record: shootingRecord, shooters: this.shooters, disabled: shootingRecord.id != null }
+      data: { record: shootingRecord }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
-        this.calculateTotals();
       }
     });
   }
 
   private requestData(monthlyScope: boolean) {
-    this.dataSource = new MatTableDataSource<IShootingRecord>([]);
-    this.electronService.getAllRecords('v_all_shooterRecords').pipe(take(1)).subscribe((elementData) => {
+    this.dataSource = new MatTableDataSource<IVaultRecord>([]);
+    this.electronService.getAllRecords('vault_records').pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;
       }
-      this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
-      this.calculateTotals();
+      this.dataSource = new MatTableDataSource<IVaultRecord>(this.elementData.filter((record) => moment(record.purchaseDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
     })
   }
 
-  private getShooters() {
-    this.electronService.getAllRecords('shooters').pipe(take(1)).subscribe((shooters) => {
-      this.shooters = shooters;
-    });
-  }
 }

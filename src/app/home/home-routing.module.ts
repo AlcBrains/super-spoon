@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home-component/home.component';
 import { ShooterComponent } from './components/shooter-component/shooter.component';
+import { VaultComponent } from './components/vault-component/vault.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path:'shooters',
     component: ShooterComponent
+  },
+  {
+    path:'vault',
+    component: VaultComponent
   }
 ];
 

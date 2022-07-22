@@ -16,10 +16,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddRecordComponent } from './components/add-record/add-record.component';
 import { AddShooterComponent } from './components/add-shooter/add-shooter.component';
+import { AddVaultRecordComponent } from './components/add-vault-record/add-vault-record.component';
 import { DeleteRecordComponent } from './components/delete-record/delete-record.component';
-import { DeleteShooterComponent } from './components/delete-shooter/delete-shooter.component';
 import { HomeComponent } from './components/home-component/home.component';
 import { ShooterComponent } from './components/shooter-component/shooter.component';
+import { VaultComponent } from './components/vault-component/vault.component';
 import { HomeRoutingModule } from './home-routing.module';
 
 
@@ -29,7 +30,8 @@ import { HomeRoutingModule } from './home-routing.module';
     AddRecordComponent,
     DeleteRecordComponent,
     AddShooterComponent,
-    DeleteShooterComponent,
+    VaultComponent,
+    AddVaultRecordComponent,
     ShooterComponent],
   imports: [
     CommonModule,

@@ -1,0 +1,106 @@
+<div class="container" class="mat-elevation-z8">
+
+    <div style="padding-top:5px">
+        <button mat-fab color="primary" class="first-button margined-button" (click)="createVaultRecord()"><mat-icon class="material-symbols-outlined">
+          add
+          </mat-icon>
+        </button>
+        <button mat-fab color="primary" class="margined-button" (click)="printContent()"><mat-icon class="material-symbols-outlined">
+            print
+            </mat-icon>
+          </button>
+
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>Προβολή</b></mat-label>
+            <mat-select (selectionChange)="setMonthScope(false)" [(ngModel)]="monthScope">
+                <mat-option value="month">Μήνας</mat-option>
+                <mat-option value="semester">Εξάμηνο</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>Διαμέτρημα</b></mat-label>
+            <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="slugTypeSearch">
+                <mat-option>{{ 'all' | translate }}</mat-option>
+                <mat-option value="9mm">0,9"</mat-option>
+                <mat-option value="22mm">0,22"</mat-option>
+                <mat-option value="40mm">0,40"</mat-option>
+                <mat-option value="45mm">0,45"</mat-option>
+                <mat-option value="308mm">0,308"</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margined-search">
+            <mat-label><b>{{ 'search' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]='searchText' (keyup)="filterRecords()">
+        </mat-form-field>
+
+    </div>
+    <div #test>
+        <table class="full-width" mat-table [dataSource]="dataSource" matSort>
+
+            <!-- S Date Column -->
+            <ng-container matColumnDef="supplierName">
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>Προμηθευτής</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="supplierName"> {{element.supplierName}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- Slug type Column -->
+            <ng-container matColumnDef="slugType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'ammoType' | translate }}</b> </th>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.slugType}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- QuantityType type Column -->
+            <ng-container matColumnDef="quantityType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantityType' | translate }}</b> </th>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.quantityType}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- Quantity Column -->
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantity' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="quantity"> {{element.quantity}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- License Column -->
+            <ng-container matColumnDef="licenseNo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'licenceNo' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="licenseNo"> {{element.licenseNo}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- Quantity Column -->
+            <ng-container matColumnDef="purchaseDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'purchaseDate' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="purchaseDate"> {{element.purchaseDate}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <button mat-mini-fab color="primary" style="margin:5px" (click)="$event.stopPropagation(); editVaultRecord(row)">
+                    <mat-icon class="material-symbols-outlined smaller">
+                        edit
+                        </mat-icon>
+                    </button>
+                    <button mat-mini-fab color="warn" style="margin:5px" (click)="$event.stopPropagation(); deleteVaultRecord(row)">
+                        <mat-icon class="material-symbols-outlined smaller">
+                            delete
+                            </mat-icon>
+                        </button>
+                </mat-cell>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        </table>
+    </div>
+</div>
