@@ -29,7 +29,7 @@ export class AddRecordComponent implements OnInit {
     name: new FormControl('', [Validators.required]),
     type: new FormControl('', [Validators.required]),
     location: new FormControl('', [Validators.required]),
-    slugType: new FormControl('', [Validators.required]),
+    caliber: new FormControl('', [Validators.required]),
     priceSold: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
     priceBought: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
     quantity: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')])

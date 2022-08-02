@@ -30,13 +30,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public totalProfit: number;
   public profitPerUnit: number;
-  public slugTypeSearch: string;
+  public caliberSearch: string;
   private shooters: IShooter[];
   public searchText: any;
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
   public elementData: IShootingRecord[];
-  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'slugType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
+  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'caliber', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
 
   constructor(public dialog: MatDialog, private electronService: ElectronService) { }
 
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public setMonthScope(init: boolean) {
     this.searchText = '';
-    this.slugTypeSearch = '';
+    this.caliberSearch = '';
     this.requestData(this.monthScope === 'month');
 
     if (!init) {
@@ -111,8 +111,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * Change filtering based on ammo type
    */
   public changeAmmoType() {
-    this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
-    this.dataSource.filter = this.slugTypeSearch;
+    this.dataSource.filterPredicate = ((data, filter) => data.caliber == filter);
+    this.dataSource.filter = this.caliberSearch;
     this.calculateTotals();
     this.setSortingDataAccessor();
   }
@@ -152,7 +152,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   private openDialog(shootingRecord: any) {
-    console.log(shootingRecord);
     shootingRecord.shooterId = [shootingRecord.shooterId]
     this.dialog.open(AddRecordComponent, {
       width: '550px ',

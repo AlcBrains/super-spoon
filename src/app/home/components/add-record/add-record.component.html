@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Νέα καταχώρηση</h1>
+<h1 mat-dialog-title>{{ 'newEntry' | translate}}</h1>
 <div mat-dialog-content>
     <div [formGroup]="shootingRecordFormControl">
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Ημερομηνία</b></mat-label>
+            <mat-label><b>{{ 'saleDate' | translate}}</b></mat-label>
             <input matInput [matDatepicker]="picker" [(ngModel)]="data.record.saleDate" formControlName="saleDate">
             <mat-hint>ΗΗ/ΜΜ/ΕΕΕΕ</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -10,17 +10,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τοποθεσία</b></mat-label>
+            <mat-label><b>{{ 'location' | translate}}</b></mat-label>
             <input matInput [(ngModel)]="data.record.location" formControlName="location">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τύπος</b></mat-label>
+            <mat-label><b>{{ 'gameType' | translate}}</b></mat-label>
             <mat-select [(ngModel)]="data.record.type" formControlName="type">
                 <mat-option>None</mat-option>
-                <mat-option value="A-match">Αγώνας</mat-option>
-                <mat-option value="B-training">Προπόνηση</mat-option>
-                <mat-option value="C-championship">Πρωταθληματικός Αγώνας</mat-option>
+                <mat-option value="A_match">Αγώνας</mat-option>
+                <mat-option value="B_training">Προπόνηση</mat-option>
+                <mat-option value="C_championship">Πρωταθληματικός αγώνας</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -32,8 +32,8 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>{{ 'ammoType' | translate }}</b></mat-label>
-            <mat-select [(ngModel)]="data.record.slugType" formControlName="slugType">
+            <mat-label><b>{{ 'caliber' | translate }}</b></mat-label>
+            <mat-select [(ngModel)]="data.record.caliber" formControlName="caliber">
                 <mat-option>None</mat-option>
                 <mat-option value="9mm">9mm</mat-option>
                 <mat-option value="0.22&quot;">0.22"</mat-option>
@@ -49,18 +49,18 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τιμή αγοράς (ανα Τμχ)</b></mat-label>
+            <mat-label><b>{{ 'priceBoughtPerUnit' | translate}}</b></mat-label>
             <input matInput [(ngModel)]="data.record.priceBought" formControlName="priceBought">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>Τιμή πώλησης (ανα Τμχ)</b></mat-label>
+            <mat-label><b>{{ 'priceSoldPerUnit' | translate}}</b></mat-label>
             <input matInput [(ngModel)]="data.record.priceSold" formControlName="priceSold">
         </mat-form-field>
 
     </div>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-raised-button (click)="onNoClick()">Ακύρωση</button>
+    <button mat-raised-button (click)="onNoClick()">{{ 'cancel' | translate}}</button>
     <button mat-raised-button color="primary" (click)="onSave()" cdkFocusInitial>Ok</button>
 </div>

@@ -5,8 +5,9 @@ export interface IShootingRecord {
   type: string;
   shooterName: string;
   shooterId: number;
-  slugType: string;
+  caliber: string;
   quantity: number;
+  quantityType: string;
   priceBought: number;
   priceSold: number;
   profitPerUnit: number;

@@ -42,8 +42,8 @@ export class ElectronService {
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
-  public deleteRecord(recordObject): Observable<void> {
-    return of(this.ipcRenderer.sendSync('delete-item', recordObject))
+  public addVaultRecord(item: any): Observable<void> {
+    return of(this.ipcRenderer.sendSync('add-vault-item', item))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
@@ -51,5 +51,11 @@ export class ElectronService {
     return of(this.ipcRenderer.sendSync('add-shooter', shooter))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
+
+  public deleteRecord(recordObject): Observable<void> {
+    return of(this.ipcRenderer.sendSync('delete-item', recordObject))
+      .pipe(catchError((error: any) => throwError(() => new Error(error))))
+  }
+
 
 }

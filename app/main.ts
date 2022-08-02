@@ -12,12 +12,12 @@ const args = process.argv.slice(1),
 
 let db: sqlite3.Database;
 
-const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, shooter_id, slugType, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
-const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=?, shooter_id=?, slugType=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
+const create_sql = 'INSERT INTO shootingRecords (saleDate, location, type, shooter_id, caliber, quantity, priceBought, priceSold, profitPerUnit, profit) VALUES (?, ? ,? ,? ,? ,?, ?, ?, ?, ?)'
+const update_sql = 'UPDATE shootingRecords set saleDate=?, location=?, type=?, shooter_id=?, caliber=?, quantity=? , priceBought=?, priceSold=?, profitPerUnit=?, profit=? WHERE id=?'
 const delete_sql = 'DELETE from shootingRecords where id=?'
 
 const create_vault_record_sql = 'Insert into vaultRecords () VALUES()'
-const update_vault_record_sql = 'UPDATE vaultRecords set , , , , , where id=?'
+const update_vault_record_sql = 'UPDATE vaultRecords set supplierName=?, caliber=?, quantityType=?, quantity=?, licenceNo=?, purchaseDate=? where id=?'
 const delete_vault_record_sql = 'DELETE from vaultRecords where id=?'
 
 const create_shooter_sql = 'INSERT INTO shooters (name, dai) VALUES (?, ?) '
@@ -101,7 +101,7 @@ function createListeners() {
 
   ipcMain.on('add-item', async (event: any, records: any) => {
     for (let data of records.shooterId) {
-      let arrayToInsert = [records.saleDate, records.location, records.type, data, records.slugType, records.quantity, records.priceBought, records.priceSold, records.profitPerUnit, records.profit]
+      let arrayToInsert = [records.saleDate, records.location, records.type, data, records.caliber, records.quantity, records.priceBought, records.priceSold, records.profitPerUnit, records.profit]
       let sql = create_sql;
       if (records.hasOwnProperty('id')) {
         arrayToInsert.push(records.id);
@@ -110,13 +110,26 @@ function createListeners() {
       db.run(sql, ...arrayToInsert, (result: any, error: any) => { })
     }
     event.returnValue = 'ok';
+  });
+
+  ipcMain.on('add-vault-item', async (event: any, record: any) => {
+    let sql = create_vault_record_sql;
+    let arrayToInsert = [record.supplierName, record.caliber, record.quantityType, record.quantity, record.licenceNo, record.purchaseDate];
+
+    if (record.hasOwnProperty('id')) {
+      arrayToInsert.push(record.id);
+      sql = update_vault_record_sql;
+    }
+    db.run(sql, ...arrayToInsert, (result: any, error: any) => { })
+
+    event.returnValue = 'ok';
 
   });
 
   ipcMain.on('delete-item', async (event: any, data: any) => {
 
     let sql;
-    
+
     switch (data.recordType) {
       case 'IShooter':
         sql = delete_shooter_sql;
@@ -124,7 +137,7 @@ function createListeners() {
       case 'IShootingRecord':
         sql = delete_sql;
         break;
-      case 'IVaultRecord': 
+      case 'IVaultRecord':
         sql = delete_vault_record_sql;
         break;
     }
@@ -171,7 +184,7 @@ function createRecordsTable() {
       location TEXT, 
       type TEXT, 
       shooter_id INTEGER,
-      slugType TEXT, 
+      caliber TEXT, 
       quantity INTEGER, 
       priceBought REAL, 
       priceSold REAL, 
@@ -187,7 +200,7 @@ function createVaultRecordsTable() {
     CREATE TABLE IF NOT EXISTS vaultRecords (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       supplierName TEXT,
-      slugType TEXT, 
+      caliber TEXT, 
       quantityType TEXT, 
       quantity INTEGER,
       licenceNo TEXT, 

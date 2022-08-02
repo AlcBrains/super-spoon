@@ -20,7 +20,7 @@
 
         <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>Διαμέτρημα</b></mat-label>
-            <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="slugTypeSearch">
+            <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="caliberSearch">
                 <mat-option>{{ 'all' | translate }}</mat-option>
                 <mat-option value="9mm">0,9"</mat-option>
                 <mat-option value="22mm">0,22"</mat-option>
@@ -41,22 +41,22 @@
 
             <!-- S Date Column -->
             <ng-container matColumnDef="supplierName">
-                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>Προμηθευτής</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'supplierName' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="supplierName"> {{element.supplierName}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Slug type Column -->
-            <ng-container matColumnDef="slugType">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'ammoType' | translate }}</b> </th>
-                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.slugType}} </td>
+            <ng-container matColumnDef="caliber">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'caliber' | translate }}</b> </th>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="caliber"> {{element.caliber}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- QuantityType type Column -->
             <ng-container matColumnDef="quantityType">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantityType' | translate }}</b> </th>
-                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="slugType"> {{element.quantityType}} </td>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="caliber"> {{element.quantityType}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
@@ -68,9 +68,9 @@
             </ng-container>
 
             <!-- License Column -->
-            <ng-container matColumnDef="licenseNo">
+            <ng-container matColumnDef="licenceNo">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'licenceNo' | translate }}</b> </th>
-                <td mat-cell class="med" *matCellDef="let element" data-label="licenseNo"> {{element.licenseNo}} </td>
+                <td mat-cell class="med" *matCellDef="let element" data-label="licenceNo"> {{element.licenceNo}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 

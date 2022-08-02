@@ -13,14 +13,18 @@ import { IVaultRecord } from '../../interfaces/IVaultRecord';
 export class AddVaultRecordComponent implements OnInit {
 
   public vaultRecordFormControl = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    dai: new FormControl('', [Validators.required])
+    supplierName: new FormControl('', [Validators.required]),
+    caliber: new FormControl('', [Validators.required]),
+    quantityType: new FormControl('', [Validators.required]),
+    quantity: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')]),
+    licenceNo: new FormControl('', [Validators.required]),
+    purchaseDate: new FormControl('', [Validators.required])
   })
 
   constructor(
     private electronService: ElectronService,
     public dialogRef: MatDialogRef<AddVaultRecordComponent>,
-    @Inject(MAT_DIALOG_DATA) public vaultRecord: IVaultRecord) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
 
   ngOnInit(): void {
@@ -35,7 +39,7 @@ export class AddVaultRecordComponent implements OnInit {
   }
 
   private createOrUpdateRecord() {
-    this.electronService.addRecord(this.vaultRecord).pipe(take(1)).subscribe(() => {
+    this.electronService.addRecord(this.data.record).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })
   }

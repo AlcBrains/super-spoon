@@ -1,15 +1,42 @@
 <h1 mat-dialog-title>Νέα καταχώρηση</h1>
 <div mat-dialog-content>
-    <div [formGroup]="shooterFormControl">
+    <div [formGroup]="data.recordFormControl">
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>{{ 'shooter' | translate}}</b></mat-label>
-            <input matInput [(ngModel)]="shooter.name" formControlName="name">
+            <mat-label><b>{{ 'supplierName' | translate}}</b></mat-label>
+            <input matInput [(ngModel)]="data.record.supplierName" formControlName="supplierName">
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>{{ 'dai' | translate }}</b></mat-label>
-            <input matInput [(ngModel)]="shooter.dai" formControlName="dai">
+            <mat-label><b>{{ 'caliber' | translate }}</b></mat-label>
+            <mat-select [(ngModel)]="data.record.caliber" formControlName="caliber">
+                <mat-option>None</mat-option>
+                <mat-option value="9mm">9mm</mat-option>
+                <mat-option value="0.22&quot;">0.22"</mat-option>
+                <mat-option value="0.40&quot;">0.40"</mat-option>
+                <mat-option value="0.45&quot;">0.45"</mat-option>
+                <mat-option value="0.308&quot;">0.308"</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'quantityType' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]="data.record.quantityType" formControlName="quantityType">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'quantity' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]="data.record.quantity" formControlName="quantity">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'licenceNo' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]="data.record.licenceNo" formControlName="licenceNo">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="margin-small max-width-med">
+            <mat-label><b>{{ 'purchaseDate' | translate }}</b></mat-label>
+            <input matInput [(ngModel)]="data.record.purchaseDate" formControlName="purchaseDate">
         </mat-form-field>
 
     </div>

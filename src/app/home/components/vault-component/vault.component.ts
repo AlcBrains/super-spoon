@@ -7,7 +7,6 @@ import * as moment from 'moment';
 import { take } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
-import { IShooter } from '../../interfaces/IShooter';
 import { IVaultRecord } from '../../interfaces/IVaultRecord';
 import { AddVaultRecordComponent } from '../add-vault-record/add-vault-record.component';
 import { DeleteRecordComponent } from '../delete-record/delete-record.component';
@@ -30,16 +29,16 @@ export class VaultComponent implements OnInit, AfterViewInit {
 
   public totalProfit: number;
   public profitPerUnit: number;
-  public slugTypeSearch: string;
+  public caliberSearch: string;
   public searchText: any;
   public monthScope: any;
   public dataSource: MatTableDataSource<IVaultRecord>;
   public elementData: IVaultRecord[];
-  public displayedColumns: string[] = ['supplierName', 'slugType', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate'];
+  public displayedColumns: string[] = ['supplierName', 'caliber', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate'];
   /**
    * 
    * supplierName: string;
-   * slugType: string;
+   * caliber: string;
    * quantityType: string;
    * quantity: number;
    * licenceNo: string;
@@ -83,7 +82,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
     if (record == null || !record.hasOwnProperty('id')) {
       console.error('something has gone terribly wrong, record responsible: ', record);
     }
-    this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IVaultRecord" } }).afterClosed().subscribe((result) => {
+    this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: 'IVaultRecord' } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setMonthScope(false);
       }
@@ -104,7 +103,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
 
   public setMonthScope(init: boolean) {
     this.searchText = '';
-    this.slugTypeSearch = '';
+    this.caliberSearch = '';
     this.requestData(this.monthScope === 'month');
 
     if (!init) {
@@ -116,8 +115,8 @@ export class VaultComponent implements OnInit, AfterViewInit {
    * Change filtering based on ammo type
    */
   public changeAmmoType() {
-    this.dataSource.filterPredicate = ((data, filter) => data.slugType == filter);
-    this.dataSource.filter = this.slugTypeSearch;
+    this.dataSource.filterPredicate = ((data, filter) => data.caliber == filter);
+    this.dataSource.filter = this.caliberSearch;
     this.setSortingDataAccessor();
   }
 
