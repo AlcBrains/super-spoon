@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import * as moment from 'moment';
 import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
-import { IVaultRecord } from '../../interfaces/IVaultRecord';
 
 @Component({
-  selector: 'add-record',
+  selector: 'add-vault-record',
   templateUrl: './add-vault-record.component.html',
   styleUrls: ['./add-vault-record.component.scss']
 })
@@ -28,6 +28,7 @@ export class AddVaultRecordComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.data.record.purchaseDate = moment(this.data.record.purchaseDate, 'DD/MM/YYYY').toDate();
   }
 
   public onSave() {
@@ -39,7 +40,11 @@ export class AddVaultRecordComponent implements OnInit {
   }
 
   private createOrUpdateRecord() {
-    this.electronService.addRecord(this.data.record).pipe(take(1)).subscribe(() => {
+    this.data.record.purchaseDate = moment(this.data.record.purchaseDate).format('DD/MM/YYYY');
+
+    this.electronService.addVaultRecord(this.data.record).pipe(take(1)).subscribe((res) => {
+      console.log(this.data.record)
+      console.log(res)
       this.dialogRef.close({ reason: 'success' })
     })
   }

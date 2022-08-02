@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
   public elementData: IShootingRecord[];
-  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'caliber', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
+  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'caliber', 'quantityType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
 
   constructor(public dialog: MatDialog, private electronService: ElectronService) { }
 

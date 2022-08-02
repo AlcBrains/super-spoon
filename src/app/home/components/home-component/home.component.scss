@@ -34,3 +34,18 @@ th.mat-sort-header-sorted {
 .med {
     width: 350px;
 }
+
+.pd-right {
+    padding-right: 24px;
+}
+
+td,
+th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+:host ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}

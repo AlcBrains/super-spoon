@@ -32,6 +32,7 @@ export class AddRecordComponent implements OnInit {
     caliber: new FormControl('', [Validators.required]),
     priceSold: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
     priceBought: new FormControl('', [Validators.required, Validators.pattern('[0-9]+(.*)[0-9]*')]),
+    quantityType: new FormControl('', [Validators.required]),
     quantity: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')])
   })
 
@@ -61,6 +62,7 @@ export class AddRecordComponent implements OnInit {
     //Workaround to ensure that float values are properly 
     this.data.record.profitPerUnit = +(this.data.record.priceSold - this.data.record.priceBought).toFixed(2);
     this.data.record.profit = +((this.data.record.priceSold - this.data.record.priceBought) * this.data.record.quantity).toFixed(2);
+    
     this.electronService.addRecord(this.data.record).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })

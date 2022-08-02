@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Νέα καταχώρηση</h1>
 <div mat-dialog-content>
-    <div [formGroup]="data.recordFormControl">
+    <div [formGroup]="vaultRecordFormControl">
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'supplierName' | translate}}</b></mat-label>
@@ -21,8 +21,13 @@
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'quantityType' | translate }}</b></mat-label>
-            <input matInput [(ngModel)]="data.record.quantityType" formControlName="quantityType">
+            <mat-select [(ngModel)]="data.record.quantityType" formControlName="quantityType">
+                <mat-option>None</mat-option>
+                <mat-option value="box">Κουτί</mat-option>
+                <mat-option value="unit">Τεμάχιο</mat-option>
+            </mat-select>
         </mat-form-field>
+
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
             <mat-label><b>{{ 'quantity' | translate }}</b></mat-label>
@@ -35,8 +40,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="margin-small max-width-med">
-            <mat-label><b>{{ 'purchaseDate' | translate }}</b></mat-label>
-            <input matInput [(ngModel)]="data.record.purchaseDate" formControlName="purchaseDate">
+            <mat-label><b>{{ 'purchaseDate' | translate}}</b></mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="data.record.purchaseDate" formControlName="purchaseDate">
+            <mat-hint>ΗΗ/ΜΜ/ΕΕΕΕ</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
     </div>

@@ -56,7 +56,7 @@
             <!-- QuantityType type Column -->
             <ng-container matColumnDef="quantityType">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantityType' | translate }}</b> </th>
-                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="caliber"> {{element.quantityType}} </td>
+                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="caliber"> {{element.quantityType | translate}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 

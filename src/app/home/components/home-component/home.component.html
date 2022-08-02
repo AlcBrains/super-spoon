@@ -48,65 +48,72 @@
 
             <!-- Location Column -->
             <ng-container matColumnDef="location">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'location' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'location' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="location"> {{element.location}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Type Column -->
             <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'gameType' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'gameType' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="type"> {{element.type | translate}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'shooter' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'shooter' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.shooterName}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
-            <!-- Slug type Column -->
+            <!-- caliber Column -->
             <ng-container matColumnDef="caliber">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'caliber' | translate }}</b> </th>
-                <td mat-cell class="med" class="centered" *matCellDef="let element" data-label="caliber"> {{element.caliber}} </td>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'caliber' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="caliber"> {{element.caliber}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
-            <!-- Slug type Column -->
+            <!-- quantityType Column -->
+            <ng-container matColumnDef="quantityType">
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'quantityType' | translate }}</b> </th>
+                <td mat-cell class="med" *matCellDef="let element" data-label="quantityType"> {{element.quantityType | translate}} </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- quantity Column -->
             <ng-container matColumnDef="quantity">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'quantity' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'quantity' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="quantity"> {{element.quantity}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Price Sold Column -->
             <ng-container matColumnDef="priceSold">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'priceSoldPerUnit' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'priceSoldPerUnit' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="priceSold"> {{element.priceSold}} €</td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Price Bought Column -->
             <ng-container matColumnDef="priceBought">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'priceBoughtPerUnit' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'priceBoughtPerUnit' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="priceBought"> {{element.priceBought}} €</td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 
             <!-- Profit per unit Column -->
             <ng-container matColumnDef="profitPerUnit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'profitPerUnit' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'profitPerUnit' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="profitPerUnit"> {{element.profitPerUnit}} €</td>
-                <td mat-footer-cell *matFooterCellDef> {{ profitPerUnit }} € </td>
+                <td mat-footer-cell class="med" *matFooterCellDef> {{ profitPerUnit }} €</td>
             </ng-container>
 
             <!-- Profit Column -->
             <ng-container matColumnDef="profit">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> <b>{{ 'totalProfit' | translate }}</b> </th>
+                <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'totalProfit' | translate }}</b> </th>
                 <td mat-cell class="med" *matCellDef="let element" data-label="profit"> {{element.profit}} €</td>
-                <td mat-footer-cell *matFooterCellDef> {{ totalProfit }} €</td>
+                <td mat-footer-cell *matFooterCellDef class="med pd-right"> {{ totalProfit }} €</td>
             </ng-container>
 
             <ng-container matColumnDef="actions">

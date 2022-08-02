@@ -34,7 +34,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
   public monthScope: any;
   public dataSource: MatTableDataSource<IVaultRecord>;
   public elementData: IVaultRecord[];
-  public displayedColumns: string[] = ['supplierName', 'caliber', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate'];
+  public displayedColumns: string[] = ['supplierName', 'caliber', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate', 'actions'];
   /**
    * 
    * supplierName: string;
@@ -160,7 +160,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
 
   private requestData(monthlyScope: boolean) {
     this.dataSource = new MatTableDataSource<IVaultRecord>([]);
-    this.electronService.getAllRecords('vault_records').pipe(take(1)).subscribe((elementData) => {
+    this.electronService.getAllRecords('vaultRecords').pipe(take(1)).subscribe((elementData) => {
       const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {

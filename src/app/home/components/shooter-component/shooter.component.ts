@@ -55,7 +55,6 @@ export class ShooterComponent implements OnInit, AfterViewInit {
     if (record == null || !record.hasOwnProperty('id')) {
       console.error('something has gone terribly wrong, record responsible: ', record);
     }
-    console.log(record)
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IShooter" } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.getShooters();
