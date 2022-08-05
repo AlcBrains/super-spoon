@@ -29,7 +29,6 @@ function createWindow(): BrowserWindow {
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
-  let db: sqlite3.Database;
 
   // Create the browser window.
   win = new BrowserWindow({
@@ -42,6 +41,14 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
+  });
+
+  win.webContents.on('did-start-loading', () => {
+    win.setProgressBar(2, { mode: 'indeterminate' }) // second parameter optional
+  });
+
+  win.webContents.on('did-stop-loading', () => {
+    win.setProgressBar(-1);
   });
 
   Menu.setApplicationMenu(null);
@@ -120,8 +127,6 @@ function createListeners() {
       arrayToInsert.push(record.id);
       sql = update_vault_record_sql;
     }
-    console.log(sql)
-    console.log(arrayToInsert)
     db.run(sql, ...arrayToInsert, (result: any, error: any) => { })
 
     event.returnValue = 'ok';
@@ -230,8 +235,8 @@ try {
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on('ready', () => {
     createListeners();
+    createWindow();
     connectToDatabase();
-    setTimeout(createWindow, 400);
   });
 
 

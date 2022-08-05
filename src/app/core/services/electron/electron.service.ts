@@ -6,7 +6,6 @@ import { ipcRenderer, webFrame } from 'electron';
 import * as fs from 'fs';
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { IShooter } from '../../../home/interfaces/IShooter';
-import { IShootingRecord } from '../../../home/interfaces/IShootingRecord';
 
 
 @Injectable({
