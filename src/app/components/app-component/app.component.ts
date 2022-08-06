@@ -59,8 +59,6 @@ export class AppComponent implements OnInit {
       { name: '45mm', quantity: 0 },
       { name: '308mm', quantity: 0 }];
 
-
-
     this.totalVaultRecords.forEach(vaultRecord => {
       this.remaining.find((record) => record.name == vaultRecord.caliber).quantity += vaultRecord.quantity;
     });

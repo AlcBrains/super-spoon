@@ -2,13 +2,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
 import { SharedService } from '../../../core/services/shared.service';
 import { IShooter } from '../../interfaces/IShooter';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
 
 export class DateStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -26,7 +26,8 @@ export class DateStateMatcher implements ErrorStateMatcher {
 export class AddRecordComponent implements OnInit {
 
   public shooters: IShooter[];
-  public remaining: any[]
+  public remaining: any[];
+  private initialQuantity: any;
 
   public shootingRecordFormControl = new FormGroup({
     saleDate: new FormControl('', [Validators.required]),
@@ -49,6 +50,8 @@ export class AddRecordComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.shooters = this.data.shooters;
     this.remaining = [];
+    this.data.record.hasOwnProperty("id") ? this.initialQuantity = this.data.record.quantity : this.initialQuantity = 0;
+
   }
 
 
@@ -63,12 +66,17 @@ export class AddRecordComponent implements OnInit {
       return;
     }
 
+    // special case where we're even in numbers of bullets remaining and bullets we're trying to register by editing.
+    if (this.data.record.hasOwnProperty('id') && this.initialQuantity > this.data.record.quantity) {
+      this.createOrUpdateRecord();
+      return;
+    }
+
     const remainingBulletsOfCaliber = this.remaining.find((el) => el.name == this.data.record.caliber).quantity;
 
     if (this.data.record.quantity > remainingBulletsOfCaliber) {
       const msg = this.translateService.instant('insufficient').replace("<av>", remainingBulletsOfCaliber);
-      this.snackBar.open( msg, this.translateService.instant('close'));
-
+      this.snackBar.open(msg, this.translateService.instant('close'));
       return;
     }
 

@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.monthScope = "month";
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
-    this.setFilters(true);
+    this.setFilters();
     this.getShootingRecords();
     this.getShooters();
   }
@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IShootingRecord" } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setFilters(false);
+        this.setFilters();
         this.getShootingRecords();
         this.sharedService.updateTotalRecords();
       }
@@ -101,13 +101,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.table.renderRows();
   }
 
-  public setFilters(init: boolean) {
+  public setFilters() {
     this.searchText = '';
     this.caliberSearch = '';
-
-    if (init) {
-      this.setSortingDataAccessor();
-    }
   }
 
   /**
@@ -161,7 +157,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       data: { record: shootingRecord, shooters: this.shooters, disabled: shootingRecord.id != null  }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setFilters(false);
+        this.setFilters();
         this.getShootingRecords();
         this.sharedService.updateTotalRecords();
       }
