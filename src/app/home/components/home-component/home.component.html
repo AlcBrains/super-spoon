@@ -1,5 +1,4 @@
 <div class="container" class="mat-elevation-z8">
-
     <div style="padding-top:5px">
         <button mat-fab color="primary" class="first-button margined-button" (click)="createShootingRecord()"><mat-icon class="material-symbols-outlined">
           add
@@ -12,7 +11,7 @@
         <!-- https://stackoverflow.com/questions/68651907/translated-value-inside-mat-option-causes-expressionchangedafterithasbeenchecked -->
         <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>{{ 'view' | translate }}</b></mat-label>
-            <mat-select (selectionChange)="setMonthScope(false)" [(ngModel)]="monthScope">
+            <mat-select (selectionChange)="setFilters(false)" [(ngModel)]="monthScope">
                 <mat-option value="month">Μήνας</mat-option>
                 <mat-option value="semester">Εξάμηνο</mat-option>
             </mat-select>
@@ -22,11 +21,11 @@
             <mat-label><b>Διαμέτρημα</b></mat-label>
             <mat-select (selectionChange)="changeAmmoType()" [(ngModel)]="caliberSearch">
                 <mat-option>{{ 'all' | translate }}</mat-option>
-                <mat-option value="9mm">0,9"</mat-option>
-                <mat-option value="22mm">0,22"</mat-option>
-                <mat-option value="40mm">0,40"</mat-option>
-                <mat-option value="45mm">0,45"</mat-option>
-                <mat-option value="308mm">0,308"</mat-option>
+                <mat-option value="9mm">9mm</mat-option>
+                <mat-option value="22mm">22mm</mat-option>
+                <mat-option value="40mm">40mm</mat-option>
+                <mat-option value="45mm">45mm</mat-option>
+                <mat-option value="308mm">308mm</mat-option>
             </mat-select>
         </mat-form-field>
 

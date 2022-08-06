@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { take } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { ElectronService } from '../../../core/services';
+import { SharedService } from '../../../core/services/shared.service';
 import { IVaultRecord } from '../../interfaces/IVaultRecord';
 import { AddVaultRecordComponent } from '../add-vault-record/add-vault-record.component';
 import { DeleteRecordComponent } from '../delete-record/delete-record.component';
@@ -45,11 +46,11 @@ export class VaultComponent implements OnInit, AfterViewInit {
    * purchaseDate: any;
    */
 
-  constructor(public dialog: MatDialog, private electronService: ElectronService) { }
+  constructor(public dialog: MatDialog, private electronService: ElectronService, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.monthScope = "month";
-    this.setMonthScope(true);
+    this.setFilters(true);
   }
 
   ngAfterViewInit(): void {
@@ -84,7 +85,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
     }
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: 'IVaultRecord' } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setMonthScope(false);
+        this.setFilters(false);
       }
     });
   }
@@ -101,7 +102,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
     this.table.renderRows();
   }
 
-  public setMonthScope(init: boolean) {
+  public setFilters(init: boolean) {
     this.searchText = '';
     this.caliberSearch = '';
     this.requestData(this.monthScope === 'month');
@@ -153,7 +154,8 @@ export class VaultComponent implements OnInit, AfterViewInit {
       data: { record: shootingRecord }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setMonthScope(false);
+        this.setFilters(false);
+        this.sharedService.updateTotalRecords();
       }
     });
   }

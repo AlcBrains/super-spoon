@@ -1,10 +1,11 @@
-import { Component, Inject, EventEmitter, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
+import { SharedService } from '../../../core/services/shared.service';
 import { IShooter } from '../../interfaces/IShooter';
 
 export class DateStateMatcher implements ErrorStateMatcher {
@@ -23,6 +24,7 @@ export class DateStateMatcher implements ErrorStateMatcher {
 export class AddRecordComponent implements OnInit {
 
   public shooters: IShooter[];
+  public remaining: any[]
 
   public shootingRecordFormControl = new FormGroup({
     saleDate: new FormControl('', [Validators.required]),
@@ -38,14 +40,17 @@ export class AddRecordComponent implements OnInit {
 
   constructor(
     private electronService: ElectronService,
+    private sharedService: SharedService,
     public dialogRef: MatDialogRef<AddRecordComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.shooters = this.data.shooters;    
+    this.shooters = this.data.shooters;
+    this.remaining = [];
   }
 
 
   ngOnInit(): void {
     this.data.record.saleDate = moment(this.data.record.saleDate, 'DD/MM/YYYY').toDate();
+    this.sharedService.rem$.pipe(take(1)).subscribe((rem) => { this.remaining = rem });
   }
 
   public onSave() {
@@ -53,6 +58,11 @@ export class AddRecordComponent implements OnInit {
     if (!valid) {
       return;
     }
+
+    if (this.data.record.quantity > this.remaining.find((el) => el.name == this.data.record.caliber).quantity) {
+      return;
+    }
+
     this.createOrUpdateRecord();
   }
 
@@ -62,7 +72,7 @@ export class AddRecordComponent implements OnInit {
     //Workaround to ensure that float values are properly 
     this.data.record.profitPerUnit = +(this.data.record.priceSold - this.data.record.priceBought).toFixed(2);
     this.data.record.profit = +((this.data.record.priceSold - this.data.record.priceBought) * this.data.record.quantity).toFixed(2);
-    
+
     this.electronService.addRecord(this.data.record).pipe(take(1)).subscribe(() => {
       this.dialogRef.close({ reason: 'success' })
     })

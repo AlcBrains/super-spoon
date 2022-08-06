@@ -11,5 +11,12 @@
         <mat-icon>lock</mat-icon>
         <span>{{ 'vault' | translate}}</span>
     </button>
+
+    <div>
+        <div class="shadowed">
+            <button *ngFor="let caliber of remaining" mat-raised-button class="small-margin">{{ caliber.name }} : {{ caliber.quantity }} </button>
+        </div>
+    </div>
+
     <router-outlet></router-outlet>
 </div>
