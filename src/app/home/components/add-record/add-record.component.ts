@@ -7,6 +7,8 @@ import { take } from 'rxjs';
 import { ElectronService } from '../../../core/services';
 import { SharedService } from '../../../core/services/shared.service';
 import { IShooter } from '../../interfaces/IShooter';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 export class DateStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -42,6 +44,8 @@ export class AddRecordComponent implements OnInit {
     private electronService: ElectronService,
     private sharedService: SharedService,
     public dialogRef: MatDialogRef<AddRecordComponent>,
+    private snackBar: MatSnackBar,
+    private translateService: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.shooters = this.data.shooters;
     this.remaining = [];
@@ -59,7 +63,12 @@ export class AddRecordComponent implements OnInit {
       return;
     }
 
-    if (this.data.record.quantity > this.remaining.find((el) => el.name == this.data.record.caliber).quantity) {
+    const remainingBulletsOfCaliber = this.remaining.find((el) => el.name == this.data.record.caliber).quantity;
+
+    if (this.data.record.quantity > remainingBulletsOfCaliber) {
+      const msg = this.translateService.instant('insufficient').replace("<av>", remainingBulletsOfCaliber);
+      this.snackBar.open( msg, this.translateService.instant('close'));
+
       return;
     }
 

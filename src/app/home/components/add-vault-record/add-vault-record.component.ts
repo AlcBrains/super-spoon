@@ -43,8 +43,6 @@ export class AddVaultRecordComponent implements OnInit {
     this.data.record.purchaseDate = moment(this.data.record.purchaseDate).format('DD/MM/YYYY');
 
     this.electronService.addVaultRecord(this.data.record).pipe(take(1)).subscribe((res) => {
-      console.log(this.data.record)
-      console.log(res)
       this.dialogRef.close({ reason: 'success' })
     })
   }

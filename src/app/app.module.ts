@@ -19,6 +19,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatCardModule  } from '@angular/material/card'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
@@ -32,6 +33,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader => new Transla
     HomeModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatButtonModule,
     MatCardModule,
     MatIconModule,

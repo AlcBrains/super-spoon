@@ -86,6 +86,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: 'IVaultRecord' } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setFilters(false);
+        this.sharedService.updateTotalRecords();
       }
     });
   }
@@ -96,8 +97,11 @@ export class VaultComponent implements OnInit, AfterViewInit {
    */
   public filterRecords() {
 
-    //filter Records by name :
-    this.dataSource.filterPredicate = ((data, filter) => data.supplierName.toLowerCase().includes(filter.toLowerCase()));
+    //filter Records by caliber, or supplierName, or licence No :
+    this.dataSource.filterPredicate = ((data, filter) => data.supplierName.toLowerCase().includes(filter.toLowerCase())
+      || data.licenceNo.toLowerCase().includes(filter.toLowerCase())
+      || data.purchaseDate.includes(filter.toLowerCase()));
+
     this.dataSource.filter = this.searchText;
     this.table.renderRows();
   }
