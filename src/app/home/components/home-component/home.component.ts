@@ -1,12 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { ElectronService } from '../../../core/services';
 import { SharedService } from '../../../core/services/shared.service';
 import { IShooter } from '../../interfaces/IShooter';
 import { IShootingRecord } from '../../interfaces/IShootingRecord';
@@ -20,7 +19,7 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShootingRecord>;
@@ -33,24 +32,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public profitPerUnit: number;
   public caliberSearch: string;
   private shooters: IShooter[];
+  private subscription: Subscription;
   public searchText: any;
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
   public elementData: IShootingRecord[];
   public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'caliber', 'quantityType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
 
-  constructor(public dialog: MatDialog, private electronService: ElectronService, private sharedService: SharedService) { }
+  constructor(public dialog: MatDialog, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.monthScope = "month";
     this.dataSource = new MatTableDataSource<IShootingRecord>([]);
+    this.subscription = new Subscription();
     this.setFilters();
     this.getShootingRecords();
     this.getShooters();
   }
 
-  ngAfterViewInit(): void {
-    this.setSortingDataAccessor();
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 
@@ -104,6 +105,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public setFilters() {
     this.searchText = '';
     this.caliberSearch = '';
+    this.getShootingRecords();
   }
 
   /**
@@ -154,7 +156,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     shootingRecord.shooterId = [shootingRecord.shooterId]
     this.dialog.open(AddRecordComponent, {
       width: '550px ',
-      data: { record: shootingRecord, shooters: this.shooters, disabled: shootingRecord.id != null  }
+      data: { record: shootingRecord, shooters: this.shooters, disabled: shootingRecord.id != null }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
         this.setFilters();
@@ -165,7 +167,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   private getShootingRecords() {
-    this.electronService.getAllRecords('v_all_shooterRecords').pipe(take(1)).subscribe((elementData) => {
+    this.subscription.add(this.sharedService.shootingRecordsObservable.subscribe((elementData) => {
       const monthToCompare = this.monthScope === 'month' ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
@@ -173,12 +175,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.calculateShootingRecordTotals();
-    })
+      this.setSortingDataAccessor();
+    }));
   }
 
   private getShooters() {
-    this.electronService.getAllRecords('shooters').pipe(take(1)).subscribe((shooters) => {
+    this.subscription.add(this.sharedService.shooterObservable.subscribe((shooters) => {
       this.shooters = shooters;
-    });
+    }));
   }
-}
+} 

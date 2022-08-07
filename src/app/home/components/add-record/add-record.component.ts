@@ -57,7 +57,7 @@ export class AddRecordComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.record.saleDate = moment(this.data.record.saleDate, 'DD/MM/YYYY').toDate();
-    this.sharedService.rem$.pipe(take(1)).subscribe((rem) => { this.remaining = rem });
+    this.sharedService.remainingAmmoObservable.pipe(take(1)).subscribe((rem) => { this.remaining = rem });
   }
 
   public onSave() {

@@ -12,7 +12,7 @@
 
         <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>Προβολή</b></mat-label>
-            <mat-select (selectionChange)="setFilters(false)" [(ngModel)]="monthScope">
+            <mat-select (selectionChange)="setFilters()" [(ngModel)]="monthScope">
                 <mat-option value="month">Μήνας</mat-option>
                 <mat-option value="semester">Εξάμηνο</mat-option>
             </mat-select>

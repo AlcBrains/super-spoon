@@ -24,20 +24,21 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getShootingRecords();
-    this.getTotalVaultRecords();
-    this.calculateRemainingBulletsPerCaliber();
-
-    this.sharedService.data$.subscribe((val) => {
+    this.sharedService.refreshRemainingAmmoObservable.subscribe((val) => {
       this.getShootingRecords();
       this.getTotalVaultRecords();
       this.calculateRemainingBulletsPerCaliber();
+    });
+
+    this.sharedService.refreshTotalShootersObservable.subscribe(() => {
+      this.getShooters();
     })
   }
 
 
   private getShootingRecords() {
     this.electronService.getAllRecords('v_all_shooterRecords').pipe(take(1)).subscribe((elementData) => {
+      this.sharedService.updateGetShootingRecordsFromDatabase(elementData);
       //Transforming shooting records here to compare with vault records and get all data.
       this.totalShootingrecords = elementData.map((element) => {
         return { caliber: element.caliber, quantity: element.quantityType != 'box' ? element.quantity : element.quantity * 50 }
@@ -47,7 +48,14 @@ export class AppComponent implements OnInit {
 
   private getTotalVaultRecords() {
     this.electronService.getAllRecords('vaultRecords').pipe(take(1)).subscribe((vaultRecords) => {
+      this.sharedService.updateGetVaultRecordsFromDatabase(vaultRecords);
       this.totalVaultRecords = vaultRecords.map((record) => { return { caliber: record.caliber, quantity: record.quantityType != 'box' ? record.quantity : record.quantity * 50 } });
+    })
+  }
+
+  private getShooters() {
+    this.electronService.getAllRecords('shooters').pipe(take(1)).subscribe((elementData) => {
+      this.sharedService.updateGetShootersFromDatabase(elementData);
     })
   }
 

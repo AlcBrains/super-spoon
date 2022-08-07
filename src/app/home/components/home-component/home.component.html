@@ -11,7 +11,7 @@
         <!-- https://stackoverflow.com/questions/68651907/translated-value-inside-mat-option-causes-expressionchangedafterithasbeenchecked -->
         <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>{{ 'view' | translate }}</b></mat-label>
-            <mat-select (selectionChange)="setFilters(false)" [(ngModel)]="monthScope">
+            <mat-select (selectionChange)="setFilters()" [(ngModel)]="monthScope">
                 <mat-option value="month">Μήνας</mat-option>
                 <mat-option value="semester">Εξάμηνο</mat-option>
             </mat-select>

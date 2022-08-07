@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { ElectronService } from '../../../core/services';
+import { SharedService } from '../../../core/services/shared.service';
 import { IShooter } from '../../interfaces/IShooter';
 import { AddShooterComponent } from '../add-shooter/add-shooter.component';
 import { DeleteRecordComponent } from '../delete-record/delete-record.component';
@@ -16,7 +16,7 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './shooter.component.html',
   styleUrls: ['./shooter.component.scss']
 })
-export class ShooterComponent implements OnInit, AfterViewInit {
+export class ShooterComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShooter>;
@@ -26,14 +26,16 @@ export class ShooterComponent implements OnInit, AfterViewInit {
   public dataSource: MatTableDataSource<IShooter>;
   public displayedColumns: string[] = ['name', 'dai', 'actions'];
 
-  constructor(public dialog: MatDialog, private electronService: ElectronService) { }
+  private subscription: Subscription;
+
+  constructor(public dialog: MatDialog, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.getShooters();
   }
 
-  ngAfterViewInit(): void {
-    this.setSortingDataAccessor();
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 
@@ -57,6 +59,7 @@ export class ShooterComponent implements OnInit, AfterViewInit {
     }
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: "IShooter" } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
+        this.sharedService.updateTotalShooters();
         this.getShooters();
       }
     });
@@ -106,19 +109,21 @@ export class ShooterComponent implements OnInit, AfterViewInit {
       data: shootingRecord
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
+        this.sharedService.updateTotalShooters();
         this.getShooters();
-        this.setSortingDataAccessor();
       }
     });
   }
 
+
   private getShooters() {
     this.dataSource = new MatTableDataSource<IShooter>([]);
-    this.electronService.getAllRecords('shooters').pipe(take(1)).subscribe((elementData) => {
+    this.subscription = this.sharedService.shooterObservable.subscribe((elementData) => {
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;
       }
       this.dataSource = new MatTableDataSource<IShooter>(elementData);
+      this.setSortingDataAccessor();
     })
 
   }

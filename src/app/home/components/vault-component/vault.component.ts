@@ -1,12 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { ElectronService } from '../../../core/services';
 import { SharedService } from '../../../core/services/shared.service';
 import { IVaultRecord } from '../../interfaces/IVaultRecord';
 import { AddVaultRecordComponent } from '../add-vault-record/add-vault-record.component';
@@ -19,7 +18,7 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './vault.component.html',
   styleUrls: ['./vault.component.scss']
 })
-export class VaultComponent implements OnInit, AfterViewInit {
+export class VaultComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IVaultRecord>;
@@ -36,27 +35,20 @@ export class VaultComponent implements OnInit, AfterViewInit {
   public dataSource: MatTableDataSource<IVaultRecord>;
   public elementData: IVaultRecord[];
   public displayedColumns: string[] = ['supplierName', 'caliber', 'quantityType', 'quantity', 'licenceNo', 'purchaseDate', 'actions'];
-  /**
-   * 
-   * supplierName: string;
-   * caliber: string;
-   * quantityType: string;
-   * quantity: number;
-   * licenceNo: string;
-   * purchaseDate: any;
-   */
+  private subscription: Subscription;
 
-  constructor(public dialog: MatDialog, private electronService: ElectronService, private sharedService: SharedService) { }
+
+  constructor(public dialog: MatDialog, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.monthScope = "month";
-    this.setFilters(true);
+    this.setFilters();
+    this.requestData();
   }
 
-  ngAfterViewInit(): void {
-    this.setSortingDataAccessor();
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
-
 
   public createVaultRecord(): void {
     let tmpRecord = {} as IVaultRecord;
@@ -85,7 +77,7 @@ export class VaultComponent implements OnInit, AfterViewInit {
     }
     this.dialog.open(DeleteRecordComponent, { data: { record: record, recordType: 'IVaultRecord' } }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setFilters(false);
+        this.setFilters();
         this.sharedService.updateTotalRecords();
       }
     });
@@ -106,14 +98,10 @@ export class VaultComponent implements OnInit, AfterViewInit {
     this.table.renderRows();
   }
 
-  public setFilters(init: boolean) {
+  public setFilters() {
     this.searchText = '';
     this.caliberSearch = '';
-    this.requestData(this.monthScope === 'month');
-
-    if (!init) {
-      this.setSortingDataAccessor()
-    }
+    this.requestData();
   }
 
   /**
@@ -158,21 +146,22 @@ export class VaultComponent implements OnInit, AfterViewInit {
       data: { record: shootingRecord }
     }).afterClosed().subscribe((result) => {
       if (result != null && result.reason == 'success') {
-        this.setFilters(false);
+        this.setFilters();
         this.sharedService.updateTotalRecords();
       }
     });
   }
 
-  private requestData(monthlyScope: boolean) {
+  private requestData() {
     this.dataSource = new MatTableDataSource<IVaultRecord>([]);
-    this.electronService.getAllRecords('vaultRecords').pipe(take(1)).subscribe((elementData) => {
-      const monthToCompare = monthlyScope ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
+    this.subscription = this.sharedService.vaultrecordsObservable.subscribe((elementData) => {
+      const monthToCompare = this.monthScope === 'month' ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
         return;
       }
       this.dataSource = new MatTableDataSource<IVaultRecord>(this.elementData.filter((record) => moment(record.purchaseDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
+      this.setSortingDataAccessor();
     })
   }
 

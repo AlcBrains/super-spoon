@@ -165,8 +165,7 @@ function connectToDatabase() {
       dropExistingView();
     })
 
-  } catch (e) {
-    console.log(e)
+  } catch (_) {
   }
 }
 
