@@ -1,7 +1,7 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortable } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -19,11 +19,11 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShootingRecord>;
-  @ViewChild('test') test: ElementRef;
+  @ViewChild('recordsTable') recordsTable: ElementRef;
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
   public elementData: IShootingRecord[];
-  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'name', 'caliber', 'quantityType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
+  public displayedColumns: string[] = ['saleDate', 'location', 'type', 'shooterName', 'caliber', 'quantityType', 'quantity', 'priceBought', 'priceSold', 'profitPerUnit', 'profit', 'actions'];
 
   constructor(public dialog: MatDialog, private sharedService: SharedService) { }
 
@@ -48,6 +48,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.setFilters();
     this.getShootingRecords();
     this.getShooters();
+  }
+
+  // Necessary, otherwise sorting does not work on the initial loading of the table
+  ngAfterViewInit():void {
+    this.setSortingDataAccessor();
   }
 
   ngOnDestroy(): void {
@@ -105,7 +110,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   public setFilters() {
     this.searchText = '';
     this.caliberSearch = '';
-    this.getShootingRecords();
   }
 
   /**
@@ -119,7 +123,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public printContent() {
-    const ws = XLSX.utils.table_to_sheet(this.test.nativeElement, { raw: true });
+    const ws = XLSX.utils.table_to_sheet(this.recordsTable.nativeElement, { raw: true });
     //Removing "Edit" Column since it is not necessary
     for (var key in ws) {
       if (ws.hasOwnProperty(key)) {
@@ -130,7 +134,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     /* save to file */
-    XLSX.writeFile(wb, 'records.xlsx');
+    XLSX.writeFile(wb, 'shootingRecords.xlsx');
   }
 
   private calculateShootingRecordTotals() {
@@ -175,7 +179,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.calculateShootingRecordTotals();
-      this.setSortingDataAccessor();
     }));
   }
 

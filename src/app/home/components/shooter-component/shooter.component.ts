@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -16,11 +16,11 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './shooter.component.html',
   styleUrls: ['./shooter.component.scss']
 })
-export class ShooterComponent implements OnInit, OnDestroy {
+export class ShooterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IShooter>;
-  @ViewChild('shooter-table') shooterTable: ElementRef;
+  @ViewChild('shooterTable') shooterTable: ElementRef;
 
   public searchText: any;
   public dataSource: MatTableDataSource<IShooter>;
@@ -32,6 +32,11 @@ export class ShooterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getShooters();
+  }
+
+  // Necessary, otherwise sorting does not work on the initial loading of the table
+  ngAfterViewInit(): void {
+    this.setSortingDataAccessor();
   }
 
   ngOnDestroy(): void {
@@ -82,7 +87,7 @@ export class ShooterComponent implements OnInit, OnDestroy {
     //Removing "Edit" Column since it is not necessary
     for (var key in ws) {
       if (ws.hasOwnProperty(key)) {
-        if (key.startsWith("L")) delete ws[key];
+        if (key.startsWith("C")) delete ws[key];
       }
     }
     const wb = XLSX.utils.book_new();

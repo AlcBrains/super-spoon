@@ -11,7 +11,7 @@
         <!-- https://stackoverflow.com/questions/68651907/translated-value-inside-mat-option-causes-expressionchangedafterithasbeenchecked -->
         <mat-form-field appearance="fill" class="margined-search">
             <mat-label><b>{{ 'view' | translate }}</b></mat-label>
-            <mat-select (selectionChange)="setFilters()" [(ngModel)]="monthScope">
+            <mat-select (selectionChange)="setFilters();getShootingRecords()" [(ngModel)]="monthScope">
                 <mat-option value="month">Μήνας</mat-option>
                 <mat-option value="semester">Εξάμηνο</mat-option>
             </mat-select>
@@ -35,7 +35,7 @@
         </mat-form-field>
 
     </div>
-    <div #test>
+    <div #recordsTable>
         <table class="full-width" mat-table [dataSource]="dataSource" matSort>
 
             <!-- S Date Column -->
@@ -60,9 +60,9 @@
             </ng-container>
 
             <!-- Name Column -->
-            <ng-container matColumnDef="name">
+            <ng-container matColumnDef="shooterName">
                 <th mat-header-cell class="med" *matHeaderCellDef mat-sort-header> <b>{{ 'shooter' | translate }}</b> </th>
-                <td mat-cell class="med" *matCellDef="let element" data-label="name"> {{element.shooterName}} </td>
+                <td mat-cell class="med" *matCellDef="let element" data-label="shooterName"> {{element.shooterName}} </td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSort } from '@angular/material/sort';
@@ -18,7 +18,7 @@ import { DeleteRecordComponent } from '../delete-record/delete-record.component'
   templateUrl: './vault.component.html',
   styleUrls: ['./vault.component.scss']
 })
-export class VaultComponent implements OnInit, OnDestroy {
+export class VaultComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<IVaultRecord>;
@@ -45,6 +45,12 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.setFilters();
     this.requestData();
   }
+
+  // Necessary, otherwise sorting does not work on the initial loading of the table
+  ngAfterViewInit(): void {
+    this.setSortingDataAccessor();
+  }
+
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -118,14 +124,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     //Removing "Edit" Column since it is not necessary
     for (var key in ws) {
       if (ws.hasOwnProperty(key)) {
-        if (key.startsWith("L")) delete ws[key];
+        if (key.startsWith("G")) delete ws[key];
       }
     }
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     /* save to file */
-    XLSX.writeFile(wb, 'records.xlsx');
+    XLSX.writeFile(wb, 'vaultRecords.xlsx');
   }
 
 
