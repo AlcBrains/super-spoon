@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
   }
 
 
-  private getShootingRecords() {
+  public getShootingRecords() {
     this.electronService.getAllRecords('v_all_shooterRecords').pipe(take(1)).subscribe((elementData) => {
       this.sharedService.updateGetShootingRecordsFromDatabase(elementData);
       //Transforming shooting records here to compare with vault records and get all data.

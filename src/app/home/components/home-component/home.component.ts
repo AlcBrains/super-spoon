@@ -170,7 +170,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private getShootingRecords() {
+  public getShootingRecords() {
     this.subscription.add(this.sharedService.shootingRecordsObservable.subscribe((elementData) => {
       const monthToCompare = this.monthScope === 'month' ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
       this.elementData = elementData;

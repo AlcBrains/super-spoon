@@ -14,7 +14,7 @@ export class AddShooterComponent implements OnInit {
 
   public shooterFormControl = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    dai: new FormControl('', [Validators.required])
+    dai: new FormControl('', [Validators.required, Validators.pattern('[0-9]+')])
   })
 
   constructor(
