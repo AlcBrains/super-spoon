@@ -150,7 +150,11 @@ function createListeners() {
     }
 
     db.run(sql, data.id, (result: any, error: any) => {
-      event.returnValue = 'ok';
+      if (result !=null && result.hasOwnProperty('errno')) {
+        event.returnValue = 'constraint';
+      } else {
+        event.returnValue = 'ok';
+      }
     })
   })
 }
@@ -159,6 +163,7 @@ function connectToDatabase() {
   try {
     const dbLocation = path.join(app.getAppPath(), 'shootingRecorder.sqlite3')
     db = new sqlite3.Database(dbLocation, (err) => {
+      db.get("PRAGMA foreign_keys = ON");
       createShooterTable();
       createRecordsTable();
       createVaultRecordsTable();
@@ -197,7 +202,7 @@ function createRecordsTable() {
       priceSold REAL, 
       profitPerUnit REAL, 
       profit REAL,
-      FOREIGN KEY(shooter_id) REFERENCES shooter(id))`
+      FOREIGN KEY(shooter_id) REFERENCES shooters(id) ON DELETE RESTRICT)`
   return db.run(sql)
 }
 

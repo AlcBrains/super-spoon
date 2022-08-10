@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatSort, MatSortable } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -33,6 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   public caliberSearch: string;
   private shooters: IShooter[];
   private subscription: Subscription;
+  private shooterSubscription: Subscription;
   public searchText: any;
   public monthScope: any;
   public dataSource: MatTableDataSource<IShootingRecord>;
@@ -57,6 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.shooterSubscription.unsubscribe();
   }
 
 
@@ -171,20 +173,20 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public getShootingRecords() {
-    this.subscription.add(this.sharedService.shootingRecordsObservable.subscribe((elementData) => {
+    this.subscription = this.sharedService.shootingRecordsObservable.subscribe((elementData) => {
       const monthToCompare = this.monthScope === 'month' ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
-      this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
-        return;
+        elementData = [];
       }
+      this.elementData = elementData;
       this.dataSource = new MatTableDataSource<IShootingRecord>(this.elementData.filter((record) => moment(record.saleDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.calculateShootingRecordTotals();
-    }));
+    });
   }
 
   private getShooters() {
-    this.subscription.add(this.sharedService.shooterObservable.subscribe((shooters) => {
+    this.shooterSubscription = this.sharedService.shooterObservable.subscribe((shooters) => {
       this.shooters = shooters;
-    }));
+    });
   }
 } 

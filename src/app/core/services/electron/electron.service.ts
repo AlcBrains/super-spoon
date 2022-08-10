@@ -51,7 +51,7 @@ export class ElectronService {
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
 
-  public deleteRecord(recordObject): Observable<void> {
+  public deleteRecord(recordObject): Observable<any> {
     return of(this.ipcRenderer.sendSync('delete-item', recordObject))
       .pipe(catchError((error: any) => throwError(() => new Error(error))))
   }
