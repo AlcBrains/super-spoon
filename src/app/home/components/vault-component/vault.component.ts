@@ -72,7 +72,7 @@ export class VaultComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public editVaultRecord(record: any) {
     let tmpRecord = { ...record };
-    tmpRecord.shooterId = [tmpRecord.shooterId]
+    tmpRecord.caliber = [tmpRecord.caliber]
     this.openDialog(tmpRecord);
   }
 

@@ -119,18 +119,21 @@ function createListeners() {
     event.returnValue = 'ok';
   });
 
-  ipcMain.on('add-vault-item', async (event: any, record: any) => {
+  ipcMain.on('add-vault-item', async (event: any, records: any) => {
     let sql = create_vault_record_sql;
-    let arrayToInsert = [record.supplierName, record.caliber, record.quantityType, record.quantity, record.licenceNo, record.purchaseDate];
 
-    if (record.hasOwnProperty('id')) {
-      arrayToInsert.push(record.id);
-      sql = update_vault_record_sql;
+    for (let caliber of records.caliber) {
+      let arrayToInsert = [records.supplierName, caliber, records.quantityType, records.quantity, records.licenceNo, records.purchaseDate];
+
+      if (records.hasOwnProperty('id')) {
+        arrayToInsert.push(records.id);
+        sql = update_vault_record_sql;
+      }
+
+      db.run(sql, ...arrayToInsert, (result: any, error: any) => { })
     }
-    db.run(sql, ...arrayToInsert, (result: any, error: any) => { })
 
     event.returnValue = 'ok';
-
   });
 
   ipcMain.on('delete-item', async (event: any, data: any) => {
@@ -150,7 +153,7 @@ function createListeners() {
     }
 
     db.run(sql, data.id, (result: any, error: any) => {
-      if (result !=null && result.hasOwnProperty('errno')) {
+      if (result != null && result.hasOwnProperty('errno')) {
         event.returnValue = 'constraint';
       } else {
         event.returnValue = 'ok';

@@ -21,6 +21,9 @@ export class AddVaultRecordComponent implements OnInit {
     purchaseDate: new FormControl('', [Validators.required])
   })
 
+  public calibers = ['9mm', '22mm', '40mm', '45mm', '308mm'];
+  public disabled: boolean;
+
   constructor(
     private electronService: ElectronService,
     public dialogRef: MatDialogRef<AddVaultRecordComponent>,
@@ -29,6 +32,7 @@ export class AddVaultRecordComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.record.purchaseDate = moment(this.data.record.purchaseDate, 'DD/MM/YYYY').toDate();
+    this.disabled = (this.data.record.id != null);
   }
 
   public onSave() {
@@ -41,7 +45,6 @@ export class AddVaultRecordComponent implements OnInit {
 
   private createOrUpdateRecord() {
     this.data.record.purchaseDate = moment(this.data.record.purchaseDate).format('DD/MM/YYYY');
-
     this.electronService.addVaultRecord(this.data.record).pipe(take(1)).subscribe((res) => {
       this.dialogRef.close({ reason: 'success' })
     })
