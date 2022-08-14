@@ -162,10 +162,10 @@ export class VaultComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dataSource = new MatTableDataSource<IVaultRecord>([]);
     this.subscription = this.sharedService.vaultrecordsObservable.subscribe((elementData) => {
       const monthToCompare = this.monthScope === 'month' ? moment().startOf('month') : moment().startOf('month').subtract(6, 'months');
-      this.elementData = elementData;
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
-        return;
+        elementData = [];
       }
+      this.elementData = elementData;
       this.dataSource = new MatTableDataSource<IVaultRecord>(this.elementData.filter((record) => moment(record.purchaseDate, 'DD/MM/YYYY').isSameOrAfter(monthToCompare, 'month')));
       this.setSortingDataAccessor();
     })

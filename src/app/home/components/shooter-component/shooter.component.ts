@@ -122,10 +122,9 @@ export class ShooterComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   private getShooters() {
-    this.dataSource = new MatTableDataSource<IShooter>([]);
     this.subscription = this.sharedService.shooterObservable.subscribe((elementData) => {
       if (elementData == null || Object.keys(elementData).length === 0 || elementData.length == 0) {
-        return;
+        elementData = []
       }
       this.dataSource = new MatTableDataSource<IShooter>(elementData);
       this.setSortingDataAccessor();
