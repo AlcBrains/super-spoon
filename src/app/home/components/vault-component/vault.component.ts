@@ -63,6 +63,7 @@ export class VaultComponent implements OnInit, OnDestroy, AfterViewInit {
       delete tmpRecord["id"];
       delete tmpRecord["name"];
     }
+    tmpRecord.caliber = [tmpRecord.caliber];
     this.openDialog(tmpRecord as IVaultRecord);
   }
 

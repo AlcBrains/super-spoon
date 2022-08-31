@@ -1,7 +1,7 @@
 export interface IVaultRecord {
   id: number;
   supplierName: string;
-  caliber: string;
+  caliber: any;
   quantityType: string;
   quantity: number;
   licenceNo: string;

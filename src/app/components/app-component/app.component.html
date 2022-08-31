@@ -14,7 +14,7 @@
 
     <div>
         <div class="shadowed">
-            <button *ngFor="let caliber of remaining" mat-raised-button class="small-margin" [ngClass]="{'error': caliber.quantity < 0}">{{ caliber.name }} : {{ caliber.quantity }} </button>
+            <button *ngFor="let caliber of remaining" mat-raised-button class="small-margin" [ngClass]="{'error': caliber.quantity < 0}">{{ caliber.name | translate }} : {{ caliber.quantity }} </button>
         </div>
     </div>
 
